@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    searchbing (0.2.6)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  searchbing
