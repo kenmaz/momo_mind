@@ -12,7 +12,7 @@ require 'digest/md5'
 APIKEY = 'o1W2+VEhae2vI5OLW6pXpL5b2sd2+D7w9pTLOb0eyFk'
 
 def get(keyword, skip = 0)
-  url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27image%27&Query=#{query(keyword)}&Market=%27ja-JP%27&Adult=%27Strict%27&ImageFilters=%27Size%3AMedium%27&$format=json&$skip=#{skip}"
+  url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27image%27&Query=#{query(keyword)}&Market=%27ja-JP%27&Adult=%27Strict%27&ImageFilters=%27Size%3ALarge%27&$format=json&$skip=#{skip}"
 
   uri = URI(url)
   req = Net::HTTP::Get.new(uri.request_uri)
