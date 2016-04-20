@@ -1,0 +1,10 @@
+img/reni1.png 0
+img/reni2.png 0
+img/arin1.png 1
+img/arin2.png 1
+img/shiori1.png 2
+img/shiori2.png 2
+img/momoka1.png 3
+img/momoka2.png 3
+img/kanako1.png 4
+img/kanako2.png 4

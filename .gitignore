@@ -3,6 +3,12 @@ crawler/*.csv
 crawler/*.json
 *imgs*
 *out_*
+**out
+**img
+**/*.jpg
+**/checkpoint
+**/*.ckpt*
+**/*.png
 
 **/.Python
 **/[Bb]in
