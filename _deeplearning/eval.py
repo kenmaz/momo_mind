@@ -101,13 +101,7 @@ if __name__ == '__main__':
     sess.run(tf.initialize_all_variables())
     saver.restore(sess, "model.ckpt")
 
-    names = {
-      0: "reni",
-      1: "kanako",
-      2: "shiori",
-      3: "arin",
-      4: "momoka",
-    }
+    names = {0:"reni", 1:"arin", 2:"shiori", 3:"momoka", 4:"kanako"}
 
     for i in range(len(test_image)):
         pred = np.argmax(logits.eval(feed_dict={ 
@@ -115,15 +109,15 @@ if __name__ == '__main__':
             keep_prob: 1.0 })[0])
         print names[pred]
 
-        #ix = 5  # data size
-        #iy = 5
-        #ch = 32
-        #cy = 4   # grid from channels:  32 = 4x8
-        #cx = 8
-        #vv1 = sess.run(w_conv1)
-        #v = vis_conv(vv1,ix,iy,ch,cy,cx)
+        ix = 5  # data size
+        iy = 5
+        ch = 32
+        cy = 4   # grid from channels:  32 = 4x8
+        cx = 8
+        vv1 = sess.run(w_conv1)
+        v = vis_conv(vv1,ix,iy,ch,cy,cx)
         #plt.figure(figsize = (8,8))
-        #plt.imshow(v,cmap="Greys_r",interpolation='nearest')
-        #cv2.waitKey(0)
-        #cv2.destroyAllWindows()
+        plt.imshow(v,cmap="Greys_r",interpolation='nearest')
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
