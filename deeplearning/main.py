@@ -5,18 +5,22 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow.python.platform
+from datetime import datetime
 
 NUM_CLASSES = 5
 IMAGE_SIZE = 28
 IMAGE_PIXELS = IMAGE_SIZE*IMAGE_SIZE*3
 
+LOGDIR = '/tmp/data.%s' % datetime.now().isoformat()
+print LOGDIR
+
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('train', 'train.txt', 'File name of train data')
 flags.DEFINE_string('test', 'test.txt', 'File name of train data')
-flags.DEFINE_string('train_dir', '/tmp/data', 'Directory to put the training data.')
+flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 10, 'Batch size'
+flags.DEFINE_integer('batch_size', 30, 'Batch size'
                      'Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 
@@ -49,12 +53,13 @@ def inference(images_placeholder, keep_prob):
       return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
                             strides=[1, 2, 2, 1], padding='SAME')
 
-    # 入力を28x28x3に変形
-    x_image = tf.reshape(images_placeholder, [-1, 28, 28, 3])
+    # 入力をIMAGE_SIZEx IMAGE_SIZE x3に変形
+    x_image = tf.reshape(images_placeholder, [-1, IMAGE_SIZE, IMAGE_SIZE, 3])
 
     # 畳み込み層1の作成
     with tf.name_scope('conv1') as scope:
         W_conv1 = weight_variable([5, 5, 3, 32])
+
         b_conv1 = bias_variable([32])
         h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
 
@@ -153,9 +158,9 @@ if __name__ == '__main__':
         line = line.rstrip()
         l = line.split()
         print l;
-        # データを読み込んで28x28に縮小
+        # データを読み込んでIMAGE_SIZE x IMAGE_SIZEに縮小
         img = cv2.imread(l[0])
-        img = cv2.resize(img, (28, 28))
+        img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
         # 一列にした後、0-1のfloat値にする
         train_image.append(img.flatten().astype(np.float32)/255.0)
         # ラベルを1-of-k方式で用意する
