@@ -8,8 +8,8 @@ import tensorflow.python.platform
 from datetime import datetime
 
 NUM_CLASSES = 5
-IMAGE_SIZE = 28
-IMAGE_PIXELS = IMAGE_SIZE*IMAGE_SIZE*3
+IMAGE_SIZE = 28*2
+IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * 3
 
 LOGDIR = '/tmp/data.%s' % datetime.now().isoformat()
 print LOGDIR
@@ -25,15 +25,7 @@ flags.DEFINE_integer('batch_size', 30, 'Batch size'
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 
 def inference(images_placeholder, keep_prob):
-    """ 予測モデルを作成する関数
 
-    引数: 
-      images_placeholder: 画像のplaceholder
-      keep_prob: dropout率のplace_holder
-
-    返り値:
-      y_conv: 各クラスの確率(のようなもの)
-    """
     # 重みを標準偏差0.1の正規分布で初期化
     def weight_variable(shape):
       initial = tf.truncated_normal(shape, stddev=0.1)
@@ -179,7 +171,7 @@ if __name__ == '__main__':
         line = line.rstrip()
         l = line.split()
         img = cv2.imread(l[0])
-        img = cv2.resize(img, (28, 28))
+        img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
         test_image.append(img.flatten().astype(np.float32)/255.0)
         tmp = np.zeros(NUM_CLASSES)
         tmp[int(l[1])] = 1
