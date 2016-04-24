@@ -1,4 +1,3 @@
-../face_detect_py/out/test/arin/0_05693c65379c3fd3a344f6c85737c703.jpg 3
 ../face_detect_py/out/test/arin/0_a9e46a91273d25b8122ca562a2521fd4.jpg 3
 ../face_detect_py/out/test/arin/0_bcf993bfc1137177100e6b9a092c4fa1.jpg 3
 ../face_detect_py/out/test/arin/0_c91202b8a63840575624eafe7c711ad0.jpg 3
@@ -15,9 +14,7 @@
 ../face_detect_py/out/test/arin/0_f8ac7b42a1de0be56a3474bfaf2411b4.jpg 3
 ../face_detect_py/out/test/arin/1_23fa2c9f325c37afa5a8b9468e543873.jpeg 3
 ../face_detect_py/out/test/arin/1_5aff614473736aeff9de01c93ee17a7c.jpg 3
-../face_detect_py/out/test/arin/1_621a9d8b1844bd11c6c933efac7aa92e.jpeg 3
 ../face_detect_py/out/test/arin/1_70e83020bc7492f200f21ab229c924d6.jpg 3
-../face_detect_py/out/test/kanako/0_41ce340b42c6c6886507f6de1cdf9352.jpg 1
 ../face_detect_py/out/test/kanako/0_77906a754abffc903537ab54a1c5d8fd.jpg 1
 ../face_detect_py/out/test/kanako/0_af3ff27448806dba90d4373234873369.jpg 1
 ../face_detect_py/out/test/kanako/0_b2c13810844737b2bbf45e2e3551e333.jpeg 1
@@ -31,12 +28,10 @@
 ../face_detect_py/out/test/kanako/0_e0242026bcc563e0dc8ed00ebf5899a9.png 1
 ../face_detect_py/out/test/kanako/0_e4257cc43b4560569d06c756d61f5f6f.jpeg 1
 ../face_detect_py/out/test/kanako/0_e487256ef1f1e1f513dc66db9505eaf8.jpg 1
-../face_detect_py/out/test/kanako/0_e97818d8f8b230dbbca0f138987296e1.jpeg 1
 ../face_detect_py/out/test/kanako/0_eb10d316ca5e1a2312eb91dfa2cc5a22.jpg 1
 ../face_detect_py/out/test/kanako/0_efa1f6f99d02e9db5ae8fd682f17e0f1.jpg 1
 ../face_detect_py/out/test/kanako/0_fd15c18f5c316b757d573676285a15c1.jpeg 1
 ../face_detect_py/out/test/kanako/0_fde87ec83be33b6eb1a354a7ffea488c.jpg 1
-../face_detect_py/out/test/momoka/0_315725de826b5ba29fc16980f2a94a52.jpg 4
 ../face_detect_py/out/test/momoka/0_36948e15515a7fb55cff2d968468403e.jpg 4
 ../face_detect_py/out/test/momoka/0_47785a71ed9529f1b4b8fecbca0255ab.jpeg 4
 ../face_detect_py/out/test/momoka/0_828856e9d8e362f9f112bccf489e14c1.jpeg 4
@@ -59,7 +54,6 @@
 ../face_detect_py/out/test/reni/0_411c3548072f3f21d8452381472b9c83.jpeg 0
 ../face_detect_py/out/test/reni/0_474edba3a95baa6530e6823dbde88c20.jpg 0
 ../face_detect_py/out/test/reni/0_5043ce6c485ea7030a7cadd830e9f71e.jpeg 0
-../face_detect_py/out/test/reni/0_621a9d8b1844bd11c6c933efac7aa92e.jpeg 0
 ../face_detect_py/out/test/reni/0_6877cf52f3342c1b2a1a517ca06ab74b.jpg 0
 ../face_detect_py/out/test/reni/0_797998a432d96284cce666f11bfe4c2d.jpeg 0
 ../face_detect_py/out/test/reni/0_886866a7e3e608f7dee203941f6d0ca6.jpg 0

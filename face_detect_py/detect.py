@@ -39,7 +39,7 @@ def detect_face(img_file):
 
     eyes_ok = False
     mouth_ok = False
-    nose_ok = True
+    nose_ok = False
 
     roi_gray = gray[y:y+h, x:x+w]
     roi_color = img[y:y+h, x:x+w]
@@ -64,19 +64,20 @@ def detect_face(img_file):
         mouth_ok = True
 
     #faceの中心下部付近にあればOK
-    #noses = nose_cascade.detectMultiScale(roi_gray, scale)
-    #for (nx,ny,nw,nh) in noses:
-    #    #cv2.rectangle(roi_color,(nx,ny),(nx+nw,ny+nh),(255,255,0),2)
-    #    w_diff = abs(w/2 - (nx+nw/2))
-    #    h_diff = h/2 - (ny+nh/2)
-    #    if h_diff < 0 and w_diff < w/10:
-    #      nose_ok = True
+    noses = nose_cascade.detectMultiScale(roi_gray, scale)
+    for (nx,ny,nw,nh) in noses:
+        #cv2.rectangle(roi_color,(nx,ny),(nx+nw,ny+nh),(255,255,0),2)
+        w_diff = abs(w/2 - (nx+nw/2))
+        h_diff = h/2 - (ny+nh/2)
+        if h_diff < 0 and w_diff < w/10:
+          nose_ok = True
 
     if eyes_ok and mouth_ok and nose_ok:
       if debug:
-        img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,255),2)
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,255),2)
       filename = os.path.basename(os.path.normpath(img_file))
-      out_file = 'out/%s_%s' % (i, filename)
+      (fn, ext) = os.path.splitext(filename)
+      out_file = 'out/%s_%s.%s' % (fn, i, ext)
       print out_file
       roi_color = img[y:y+h, x:x+w]
       cv2.imwrite(out_file, roi_color)

@@ -34,12 +34,14 @@ def query(search_term)
   return URI.encode_www_form_component('\'' + search_term + '\'')
 end
 
-get('ももクロ')
-get('ももいろクローバーZ')
-get('百田夏菜子')
-get('玉井詩織')
-get('佐々木彩夏')
-get('有安杏果')
-get('高城れに')
-get('川上アキラ')
-get('古屋智美')
+[100,200,300].each do |skip|
+  #get('ももクロ', skip)
+  #get('ももいろクローバーZ', skip)
+  get('百田夏菜子', skip)
+  get('玉井詩織', skip)
+  get('佐々木彩夏', skip)
+  get('有安杏果', skip)
+  get('高城れに', skip)
+  #get('川上アキラ', skip)
+  #get('古屋智美', skip)
+end

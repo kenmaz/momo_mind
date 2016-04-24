@@ -151,9 +151,10 @@ def inference(images_placeholder, keep_prob):
 
     # 全結合層
     with tf.name_scope('fc1') as scope:
-        W_fc1 = weight_variable([7*7*64, 1024])
+        w = IMAGE_SIZE / 4
+        W_fc1 = weight_variable([w * w * 64, 1024])
         b_fc1 = bias_variable([1024])
-        h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])
+        h_pool2_flat = tf.reshape(h_pool2, [-1, w * w * 64])
         h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
         h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
         # input: 7*7*64 input
@@ -175,6 +176,8 @@ if __name__ == '__main__':
 
     for i in range(1, len(sys.argv)):
         filepath = sys.argv[i]
+        if not os.path.isfile(filepath):
+          continue
         img_files.append(filepath)
         img = cv2.imread(filepath)
         img = cv2.resize(img, (28, 28))

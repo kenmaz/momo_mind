@@ -8,7 +8,7 @@ import tensorflow.python.platform
 from datetime import datetime
 
 NUM_CLASSES = 5
-IMAGE_SIZE = 28*2
+IMAGE_SIZE = 28
 IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * 3
 
 LOGDIR = '/tmp/data.%s' % datetime.now().isoformat()
@@ -17,12 +17,14 @@ print LOGDIR
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('train', 'train.txt', 'File name of train data')
-flags.DEFINE_string('test', 'test.txt', 'File name of train data')
+#flags.DEFINE_string('test', 'test.txt', 'File name of train data')
+flags.DEFINE_string('test', 'test_osaretai.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
 flags.DEFINE_integer('batch_size', 30, 'Batch size'
                      'Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
+#flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
 
 def inference(images_placeholder, keep_prob):
 
@@ -71,9 +73,10 @@ def inference(images_placeholder, keep_prob):
 
     # 全結合層1の作成
     with tf.name_scope('fc1') as scope:
-        W_fc1 = weight_variable([7*7*64, 1024])
+        w = IMAGE_SIZE / 4
+        W_fc1 = weight_variable([w*w*64, 1024])
         b_fc1 = bias_variable([1024])
-        h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])
+        h_pool2_flat = tf.reshape(h_pool2, [-1, w*w*64])
         h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
         # dropoutの設定
         h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
@@ -159,6 +162,14 @@ if __name__ == '__main__':
         tmp = np.zeros(NUM_CLASSES)
         tmp[int(l[1])] = 1
         train_label.append(tmp)
+
+        # 左右反転したデータもつくる
+        img_f = cv2.flip(img, 1)
+        train_image.append(img_f.flatten().astype(np.float32)/255.0)
+        tmp_f = np.zeros(NUM_CLASSES)
+        tmp_f[int(l[1])] = 1
+        train_label.append(tmp_f)
+
     # numpy形式に変換
     train_image = np.asarray(train_image)
     train_label = np.asarray(train_label)

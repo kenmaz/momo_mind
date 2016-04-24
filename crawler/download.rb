@@ -2,9 +2,10 @@ require 'csv'
 require 'net/http'
 require 'digest/md5'
 require 'openssl'
+require 'time'
 
-DIST_DIR='imgs'
-OUT_CSV_PATH='download_imgs.csv'
+DIST_DIR="imgs.#{Time.now.to_i}"
+OUT_CSV_PATH="download_imgs.#{Time.now.to_i}.csv"
 
 unless File.exist?(DIST_DIR)
   puts "mkdir #{DIST_DIR}"
