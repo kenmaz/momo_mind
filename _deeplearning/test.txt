@@ -1,5 +1,0 @@
-img/shiori3.png 2
-img/kanako3.png 4
-img/momoka3.png 3
-img/arin3.png 1
-img/reni3.png 0
