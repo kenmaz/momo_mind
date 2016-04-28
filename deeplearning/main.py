@@ -6,8 +6,10 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.python.platform
 from datetime import datetime
+import variation
 
 NUM_CLASSES = 5
+#IMAGE_SIZE = 56
 IMAGE_SIZE = 28
 IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * 3
 
@@ -17,12 +19,12 @@ print LOGDIR
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('train', 'train.txt', 'File name of train data')
-#flags.DEFINE_string('test', 'test.txt', 'File name of train data')
-flags.DEFINE_string('test', 'test_osaretai.txt', 'File name of train data')
+#flags.DEFINE_string('train', 'train_1.txt', 'File name of train data')
+flags.DEFINE_string('test', 'test.txt', 'File name of train data')
+#flags.DEFINE_string('test', 'test_osaretai.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 30, 'Batch size'
-                     'Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('batch_size', 30, 'Batch size Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 #flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
 
@@ -142,7 +144,24 @@ def accuracy(logits, labels):
     tf.scalar_summary("accuracy", accuracy)
     return accuracy
 
-if __name__ == '__main__':
+
+def names():
+    names = {
+      0: "reni",
+      1: "kanako",
+      2: "shiori",
+      3: "arin",
+      4: "momoka",
+    }
+    return names
+
+def show(img):
+    return
+    cv2.imshow('img', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+def main():
     # ファイルを開く
     f = open(FLAGS.train, 'r')
     # データを入れる配列
@@ -154,21 +173,18 @@ if __name__ == '__main__':
         l = line.split()
         print l;
         # データを読み込んでIMAGE_SIZE x IMAGE_SIZEに縮小
-        img = cv2.imread(l[0])
-        img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
-        # 一列にした後、0-1のfloat値にする
-        train_image.append(img.flatten().astype(np.float32)/255.0)
-        # ラベルを1-of-k方式で用意する
-        tmp = np.zeros(NUM_CLASSES)
-        tmp[int(l[1])] = 1
-        train_label.append(tmp)
-
-        # 左右反転したデータもつくる
-        img_f = cv2.flip(img, 1)
-        train_image.append(img_f.flatten().astype(np.float32)/255.0)
-        tmp_f = np.zeros(NUM_CLASSES)
-        tmp_f[int(l[1])] = 1
-        train_label.append(tmp_f)
+        src = cv2.imread(l[0])
+        #imgs = variation.variation(src)
+        imgs = [src]
+        for img in imgs:
+            img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
+            # 一列にした後、0-1のfloat値にする
+            train_image.append(img.flatten().astype(np.float32)/255.0)
+            # ラベルを1-of-k方式で用意する
+            tmp = np.zeros(NUM_CLASSES)
+            tmp[int(l[1])] = 1
+            train_label.append(tmp)
+            #show(img)
 
     # numpy形式に変換
     train_image = np.asarray(train_image)
@@ -251,3 +267,7 @@ if __name__ == '__main__':
 
     # 最終的なモデルを保存
     save_path = saver.save(sess, "model.ckpt")
+
+if __name__ == '__main__':
+    main()
+

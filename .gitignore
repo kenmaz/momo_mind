@@ -3,7 +3,7 @@ crawler/*.csv
 crawler/*.json
 *imgs*
 *out_*
-**out
+**out*
 **img
 **/*.jpg
 **/checkpoint
@@ -20,3 +20,4 @@ crawler/*.json
 **/pyvenv.cfg
 **/.venv
 **/pip-selfcheck.json
+**.pyc

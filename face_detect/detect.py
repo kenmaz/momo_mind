@@ -79,7 +79,17 @@ def detect_face(img_file):
       (fn, ext) = os.path.splitext(filename)
       out_file = 'out/%s_%s.%s' % (fn, i, ext)
       print out_file
+
+      #上下左右に10%ほど余分に切り出し(無理なら不要)
       roi_color = img[y:y+h, x:x+w]
+
+      margin = int(h * 0.2)
+      img_w, img_h, img_ch = img.shape
+      print 'margin:%s, img_w:%s img_h:%s' % (margin, img_w, img_h)
+      if not (y - margin < 0 or x - margin < 0 or y + margin > img_h or x + margin > img_w):
+        print 'make margin!'
+        roi_color = img[y - margin : y + h + margin, x - margin: x + w + margin]
+
       cv2.imwrite(out_file, roi_color)
     else:
       print 'eye:%s mouth:%s nose:%s' % (eyes_ok, mouth_ok, nose_ok)

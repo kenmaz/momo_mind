@@ -1,0 +1,1 @@
+../face_detect/out/train/arin/0_09aa7dc2a49225b670a9ffd402ef05e4.jpeg 3
