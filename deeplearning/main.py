@@ -7,6 +7,7 @@ import tensorflow as tf
 import tensorflow.python.platform
 from datetime import datetime
 import variation
+import random
 
 NUM_CLASSES = 5
 #IMAGE_SIZE = 56
@@ -23,7 +24,8 @@ flags.DEFINE_string('train', 'train.txt', 'File name of train data')
 flags.DEFINE_string('test', 'test.txt', 'File name of train data')
 #flags.DEFINE_string('test', 'test_osaretai.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
-flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
+#flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 30, 'Number of steps to run trainer.')
 flags.DEFINE_integer('batch_size', 30, 'Batch size Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 #flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
@@ -167,6 +169,7 @@ def main():
     # データを入れる配列
     train_image = []
     train_label = []
+    tuple_list = []
     for line in f:
         # 改行を除いてスペース区切りにする
         line = line.rstrip()
@@ -174,17 +177,20 @@ def main():
         print l;
         # データを読み込んでIMAGE_SIZE x IMAGE_SIZEに縮小
         src = cv2.imread(l[0])
-        #imgs = variation.variation(src)
-        imgs = [src]
+        imgs = variation.variation(src)
+        #imgs = [src]
         for img in imgs:
             img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
-            # 一列にした後、0-1のfloat値にする
-            train_image.append(img.flatten().astype(np.float32)/255.0)
+            img_flt = img.flatten().astype(np.float32)/255.0
             # ラベルを1-of-k方式で用意する
             tmp = np.zeros(NUM_CLASSES)
             tmp[int(l[1])] = 1
-            train_label.append(tmp)
-            #show(img)
+            tuple_list.append((img_flt, tmp))
+    random.shuffle(tuple_list)
+    for (img, label) in tuple_list:
+        train_image.append(img)
+        train_label.append(label)
+        print 'train: %s' % label
 
     # numpy形式に変換
     train_image = np.asarray(train_image)

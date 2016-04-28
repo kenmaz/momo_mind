@@ -1,3 +1,4 @@
+../face_detect/out/train/arin/4_c48316227fca60cf48288931ad51de38.jpg 3
 ../face_detect/out/train/arin/0_09aa7dc2a49225b670a9ffd402ef05e4.jpeg 3
 ../face_detect/out/train/arin/0_0a6c3f2f55fa0243bb5e3724518a90ab.jpg 3
 ../face_detect/out/train/arin/0_0be3a40a55f327f3cacac93e7f13a284.jpg 3
@@ -155,7 +156,6 @@
 ../face_detect/out/train/momoka/4_5981f5fc6930321cbefcb5c30c5ab9af.jpeg 4
 ../face_detect/out/train/momoka/4_61e4b0afb52de92831c124040e84f2c4.jpg 4
 ../face_detect/out/train/momoka/4_65fbb8d1033553111a91a4fc29390d20.jpg 4
-../face_detect/out/train/momoka/4_c48316227fca60cf48288931ad51de38.jpg 4
 ../face_detect/out/train/momoka/5_513b5e9ed24d14374c0909147bc64219.jpg 4
 ../face_detect/out/train/momoka/8_1b4911cb6e4c7caee6098fb460dfbb5a.jpg 4
 ../face_detect/out/train/momoka/8_23fa2c9f325c37afa5a8b9468e543873.jpeg 4
