@@ -10,6 +10,7 @@ import variation
 import random
 
 NUM_CLASSES = 5
+#IMAGE_SIZE = 112
 #IMAGE_SIZE = 56
 IMAGE_SIZE = 28
 IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * 3
@@ -25,7 +26,7 @@ flags.DEFINE_string('test', 'test.txt', 'File name of train data')
 #flags.DEFINE_string('test', 'test_osaretai.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 #flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
-flags.DEFINE_integer('max_steps', 30, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 1000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('batch_size', 30, 'Batch size Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 #flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
@@ -265,14 +266,14 @@ def main():
                 keep_prob: 1.0})
             summary_writer.add_summary(summary_str, step)
 
-    # 訓練が終了したらテストデータに対する精度を表示
-    print "test accuracy %g"%sess.run(acc, feed_dict={
-        images_placeholder: test_image,
-        labels_placeholder: test_label,
-        keep_prob: 1.0})
+            # 訓練が終了したらテストデータに対する精度を表示
+            print "test accuracy %g"%sess.run(acc, feed_dict={
+                images_placeholder: test_image,
+                labels_placeholder: test_label,
+                keep_prob: 1.0})
 
-    # 最終的なモデルを保存
-    save_path = saver.save(sess, "model.ckpt")
+            # 最終的なモデルを保存
+            save_path = saver.save(sess, "model.ckpt")
 
 if __name__ == '__main__':
     main()

@@ -4,6 +4,12 @@ import numpy as np
 import cv2
 import sys
 import os
+import math
+
+def show(img):
+    cv2.imshow('img',img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 def validate(img_file):
   print img_file
@@ -14,6 +20,27 @@ def validate(img_file):
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   scale = 1.02
   faces = face_cascade.detectMultiScale(gray, scale, 5)
+
+def detect_face_rotate(img_file):
+    img = cv2.imread(img_file)
+    rows, cols, colors = img.shape
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    hypot = int(math.hypot(rows, cols))
+    frame = np.zeros((hypot, hypot), np.uint8)
+    frame[int((hypot - rows) * 0.5):int((hypot + rows) * 0.5), int((hypot - cols) * 0.5):int((hypot + cols) * 0.5)] = gray
+
+    xml_dir = '/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades'
+    face_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_frontalface_alt2.xml'))
+
+    for deg in range(-50, 51, 5):
+        print('deg:%s' % deg)
+        M = cv2.getRotationMatrix2D((hypot * 0.5, hypot * 0.5), -deg, 1.0)
+        rotated = cv2.warpAffine(frame, M, (hypot, hypot))
+        faces = face_cascade.detectMultiScale(rotated, 1.02, 5)
+        for (x, y, w, h) in faces:
+            cv2.rectangle(rotated, (x, y), (x + w, y + h), (0, 0, 0), 2)
+        show(rotated)
 
 def detect_face(img_file):
   xml_dir = '/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades'
@@ -133,30 +160,28 @@ def detect_face_frontfaces(img_file):
 
 
 def detect(img_file, out_file):
-  #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml')
-  #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml')
-  #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt_tree.xml')
-  #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
-  eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+    #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml')
+    #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml')
+    #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt_tree.xml')
+    #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
+    eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
 
-  img = cv2.imread(img_file)
-  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = cv2.imread(img_file)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-  faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-  for (x,y,w,h) in faces:
-      print (x,y,w,h)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    for (x,y,w,h) in faces:
+        print (x,y,w,h)
 
-      img = cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-      roi_gray = gray[y:y+h, x:x+w]
-      roi_color = img[y:y+h, x:x+w]
-      eyes = eye_cascade.detectMultiScale(roi_gray)
-      for (ex,ey,ew,eh) in eyes:
-          cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+        img = cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = img[y:y+h, x:x+w]
+        eyes = eye_cascade.detectMultiScale(roi_gray)
+        for (ex,ey,ew,eh) in eyes:
+            cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
 
-  cv2.imshow('img',img)
-  cv2.waitKey(0)
-  cv2.destroyAllWindows()
-  cv2.imwrite(out_file, img)
+        show(img)
+        cv2.imwrite(out_file, img)
 
 def detect_all(dir_path):
   outdir = 'out'
@@ -180,5 +205,6 @@ def detect_all(dir_path):
 if __name__ == "__main__":
   param = sys.argv
   #detect_all(param[1])
-  detect_face(param[1])
+  #detect_face(param[1])
+  detect_face_rotate(param[1])
   #validate(param[1])
