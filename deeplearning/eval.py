@@ -50,6 +50,8 @@ def dump_hconv(ary, outdir = 'out_hconv1'):
 
 
 def dump_wconv(ary, outdir):
+    return
+
     # RGBの合計値を出力
     if not os.path.exists(outdir):
       os.mkdir(outdir)

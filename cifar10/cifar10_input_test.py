@@ -43,7 +43,6 @@ class CIFAR10InputTest(tf.test.TestCase):
     contents = b"".join([record for record, _ in records])
     expected = [expected for _, expected in records]
     filename = os.path.join(self.get_temp_dir(), "cifar")
-    print(filename)
     open(filename, "wb").write(contents)
 
     with self.test_session() as sess:

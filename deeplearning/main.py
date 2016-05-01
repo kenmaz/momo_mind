@@ -8,6 +8,7 @@ import tensorflow.python.platform
 from datetime import datetime
 import variation
 import random
+import momo_input
 
 NUM_CLASSES = 5
 #IMAGE_SIZE = 112
@@ -15,13 +16,16 @@ NUM_CLASSES = 5
 IMAGE_SIZE = 28
 IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * 3
 
+NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
+NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
+
 LOGDIR = '/tmp/data.%s' % datetime.now().isoformat()
 print LOGDIR
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string('train', 'train.txt', 'File name of train data')
-#flags.DEFINE_string('train', 'train_1.txt', 'File name of train data')
+#flags.DEFINE_string('train', 'train.txt', 'File name of train data')
+flags.DEFINE_string('train', 'train_1.txt', 'File name of train data')
 flags.DEFINE_string('test', 'test.txt', 'File name of train data')
 #flags.DEFINE_string('test', 'test_osaretai.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
@@ -164,40 +168,7 @@ def show(img):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def main():
-    # ファイルを開く
-    f = open(FLAGS.train, 'r')
-    # データを入れる配列
-    train_image = []
-    train_label = []
-    tuple_list = []
-    for line in f:
-        # 改行を除いてスペース区切りにする
-        line = line.rstrip()
-        l = line.split()
-        print l;
-        # データを読み込んでIMAGE_SIZE x IMAGE_SIZEに縮小
-        src = cv2.imread(l[0])
-        imgs = variation.variation(src)
-        #imgs = [src]
-        for img in imgs:
-            img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
-            img_flt = img.flatten().astype(np.float32)/255.0
-            # ラベルを1-of-k方式で用意する
-            tmp = np.zeros(NUM_CLASSES)
-            tmp[int(l[1])] = 1
-            tuple_list.append((img_flt, tmp))
-    random.shuffle(tuple_list)
-    for (img, label) in tuple_list:
-        train_image.append(img)
-        train_label.append(label)
-        print 'train: %s' % label
-
-    # numpy形式に変換
-    train_image = np.asarray(train_image)
-    train_label = np.asarray(train_label)
-    f.close()
-
+def load_test_data():
     f = open(FLAGS.test, 'r')
     test_image = []
     test_label = []
@@ -213,68 +184,194 @@ def main():
     test_image = np.asarray(test_image)
     test_label = np.asarray(test_label)
     f.close()
+    return (test_image, test_label)
 
+def load_train_data():
+    # ファイルを開く
+    f = open(FLAGS.train, 'r')
+    # データを入れる配列
+    train_image = []
+    train_label = []
+    tuple_list = []
+    for line in f:
+        # 改行を除いてスペース区切りにする
+        line = line.rstrip()
+        l = line.split()
+        print l;
+        # データを読み込んでIMAGE_SIZE x IMAGE_SIZEに縮小
+        src = cv2.imread(l[0])
+        #imgs = variation.variation(src)
+        imgs = [src]
+        for img in imgs:
+            img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
+            img_flt = img.flatten().astype(np.float32)/255.0
+            # ラベルを1-of-k方式で用意する
+            tmp = np.zeros(NUM_CLASSES)
+            tmp[int(l[1])] = 1
+            tuple_list.append((img_flt, tmp))
+    random.shuffle(tuple_list)
+    for (img, label) in tuple_list:
+        train_image.append(img)
+        train_label.append(label)
+        print 'train: %s' % label
+    train_image = np.asarray(train_image)
+    train_label = np.asarray(train_label)
+    f.close()
+    return (train_image, train_label)
+
+def load_data(csv, batch_size):
+    queue = tf.train.string_input_producer(csv, shuffle=True)
+    reader = tf.TextLineReader()
+    key, value = reader.read(queue)
+    filename, label = tf.decode_csv(value, [["path"],["1"]])
+    jpeg = tf.read_file(filename)
+    distorted_image = tf.image.decode_jpeg(jpeg, channels=3)
+
+    # Randomly flip the image horizontally.
+    #distorted_image = tf.image.random_flip_left_right(distorted_image)
+
+    # Because these operations are not commutative, consider randomizing
+    # the order their operation.
+    #distorted_image = tf.image.random_brightness(distorted_image, max_delta=63)
+    #distorted_image = tf.image.random_contrast(distorted_image, lower=0.2, upper=1.8)
+
+    # Subtract off the mean and divide by the variance of the pixels.
+    #float_image = tf.image.per_image_whitening(distorted_image)
+
+    # Ensure that the random shuffling has good mixing properties.
+    min_fraction_of_examples_in_queue = 0.4
+    min_queue_examples = int(NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN * min_fraction_of_examples_in_queue)
+    print ('Filling queue with %d images before starting to train. '
+    'This will take a few minutes.' % min_queue_examples)
+
+    # Generate a batch of images and labels by building up a queue of examples.
+    return _generate_image_and_label_batch(distorted_image, label,
+        min_queue_examples, batch_size,
+        shuffle=True)
+
+def _generate_image_and_label_batch(image, label, min_queue_examples,
+                                    batch_size, shuffle):
+    """Construct a queued batch of images and labels.
+
+    Args:
+    image: 3-D Tensor of [height, width, 3] of type.float32.
+    label: 1-D Tensor of type.int32
+    min_queue_examples: int32, minimum number of samples to retain
+    in the queue that provides of batches of examples.
+    batch_size: Number of images per batch.
+    shuffle: boolean indicating whether to use a shuffling queue.
+
+    Returns:
+    images: Images. 4D tensor of [batch_size, height, width, 3] size.
+    labels: Labels. 1D tensor of [batch_size] size.
+    """
+    # Create a queue that shuffles the examples, and then
+    # read 'batch_size' images + labels from the example queue.
+    num_preprocess_threads = 16
+    capacity = min_queue_examples + 3 * batch_size
+
+    if shuffle:
+        images, label_batch = tf.train.shuffle_batch(
+            [image, label],
+            batch_size=batch_size,
+            num_threads=num_preprocess_threads,
+            capacity=capacity,
+            min_after_dequeue=min_queue_examples)
+    else:
+        images, label_batch = tf.train.batch(
+            [image, label],
+            batch_size=batch_size,
+            num_threads=num_preprocess_threads,
+            capacity=min_queue_examples + 3 * batch_size)
+
+    # Display the training images in the visualizer.
+    tf.image_summary('images', images)
+
+    return images, tf.reshape(label_batch, [batch_size])
+
+def main2():
     with tf.Graph().as_default():
-        # 画像を入れる仮のTensor
-        images_placeholder = tf.placeholder("float", shape=(None, IMAGE_PIXELS))
-        # ラベルを入れる仮のTensor
-        labels_placeholder = tf.placeholder("float", shape=(None, NUM_CLASSES))
-        # dropout率を入れる仮のTensor
         keep_prob = tf.placeholder("float")
 
-        # inference()を呼び出してモデルを作る
-        logits = inference(images_placeholder, keep_prob)
-        # loss()を呼び出して損失を計算
-        loss_value = loss(logits, labels_placeholder)
-        # training()を呼び出して訓練
-        train_op = training(loss_value, FLAGS.learning_rate)
-        # 精度の計算
-        acc = accuracy(logits, labels_placeholder)
+        images, labels = load_data([FLAGS.train], FLAGS.batch_size)
+        #image_t, label_t, filename_t = load_data([FLAGS.test])
 
-        # 保存の準備
+        logits = inference(images, keep_prob)
+        loss_value = loss(logits, labels)
+        train_op = training(loss_value, FLAGS.learning_rate)
+        acc = accuracy(logits, labels)
+
         saver = tf.train.Saver()
-        # Sessionの作成
         sess = tf.Session()
-        # 変数の初期化
         sess.run(tf.initialize_all_variables())
-        # TensorBoardで表示する値の設定
         summary_op = tf.merge_all_summaries()
         summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph_def)
 
-        # 訓練の実行
+        for step in range(FLAGS.max_steps):
+            sess.run(train_op, feed_dict={keep_prob: 0.5})
+
+            train_accuracy = sess.run(acc, feed_dict={keep_prob: 1.0})
+            print "step %d, training accuracy %g"%(step, train_accuracy)
+
+            summary_str = sess.run(summary_op, feed_dict={keep_prob: 1.0})
+            summary_writer.add_summary(summary_str, step)
+
+            #print "test accuracy %g"%sess.run(acc, feed_dict={
+            #    images_placeholder: test_image,
+            #    labels_placeholder: test_label,
+            #    keep_prob: 1.0})
+
+            save_path = saver.save(sess, "model.ckpt")
+
+def main():
+    train_image, train_label = load_train_data()
+    test_image, test_label = load_test_data()
+
+    with tf.Graph().as_default():
+        images_placeholder = tf.placeholder("float", shape=(None, IMAGE_PIXELS))
+        labels_placeholder = tf.placeholder("float", shape=(None, NUM_CLASSES))
+        keep_prob = tf.placeholder("float")
+
+        logits = inference(images_placeholder, keep_prob)
+        loss_value = loss(logits, labels_placeholder)
+        train_op = training(loss_value, FLAGS.learning_rate)
+        acc = accuracy(logits, labels_placeholder)
+
+        saver = tf.train.Saver()
+        sess = tf.Session()
+        sess.run(tf.initialize_all_variables())
+        summary_op = tf.merge_all_summaries()
+        summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph_def)
+
         for step in range(FLAGS.max_steps):
             for i in range(len(train_image)/FLAGS.batch_size):
-                # batch_size分の画像に対して訓練の実行
                 batch = FLAGS.batch_size*i
-                # feed_dictでplaceholderに入れるデータを指定する
                 sess.run(train_op, feed_dict={
                   images_placeholder: train_image[batch:batch+FLAGS.batch_size],
                   labels_placeholder: train_label[batch:batch+FLAGS.batch_size],
                   keep_prob: 0.5})
 
-            # 1 step終わるたびに精度を計算する
             train_accuracy = sess.run(acc, feed_dict={
                 images_placeholder: train_image,
                 labels_placeholder: train_label,
                 keep_prob: 1.0})
             print "step %d, training accuracy %g"%(step, train_accuracy)
 
-            # 1 step終わるたびにTensorBoardに表示する値を追加する
             summary_str = sess.run(summary_op, feed_dict={
                 images_placeholder: train_image,
                 labels_placeholder: train_label,
                 keep_prob: 1.0})
             summary_writer.add_summary(summary_str, step)
 
-            # 訓練が終了したらテストデータに対する精度を表示
             print "test accuracy %g"%sess.run(acc, feed_dict={
                 images_placeholder: test_image,
                 labels_placeholder: test_label,
                 keep_prob: 1.0})
 
-            # 最終的なモデルを保存
             save_path = saver.save(sess, "model.ckpt")
 
 if __name__ == '__main__':
-    main()
+    #main()
+    main2()
+    #reader_test()
 

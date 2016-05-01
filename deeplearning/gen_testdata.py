@@ -17,7 +17,8 @@ if __name__ == '__main__':
     "momoka": 4,
   }
 
-  exts = ['.PNG','.JPG','.JPEG']
+  #exts = ['.PNG','.JPG','.JPEG']
+  exts = ['.JPG','.JPEG']
 
   for dirpath, dirnames, filenames in os.walk(outdir):
     for dirname in dirnames:

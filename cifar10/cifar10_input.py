@@ -115,19 +115,27 @@ def _generate_image_and_label_batch(image, label, min_queue_examples,
   # Create a queue that shuffles the examples, and then
   # read 'batch_size' images + labels from the example queue.
   num_preprocess_threads = 16
+  capacity = min_queue_examples + 3 * batch_size
+
+  print [image, label]
+  print batch_size,
+  print num_preprocess_threads
+  print capacity
+  print min_queue_examples
+
   if shuffle:
     images, label_batch = tf.train.shuffle_batch(
         [image, label],
         batch_size=batch_size,
         num_threads=num_preprocess_threads,
-        capacity=min_queue_examples + 3 * batch_size,
+        capacity=capacity,
         min_after_dequeue=min_queue_examples)
   else:
     images, label_batch = tf.train.batch(
         [image, label],
         batch_size=batch_size,
         num_threads=num_preprocess_threads,
-        capacity=min_queue_examples + 3 * batch_size)
+        capacity=capacity)
 
   # Display the training images in the visualizer.
   tf.image_summary('images', images)
@@ -146,13 +154,18 @@ def distorted_inputs(data_dir, batch_size):
     images: Images. 4D tensor of [batch_size, IMAGE_SIZE, IMAGE_SIZE, 3] size.
     labels: Labels. 1D tensor of [batch_size] size.
   """
+  filenames = [os.path.join(data_dir, 'data_batch_%d.bin' % i)
+               for i in xrange(1, 6)]
+  for f in filenames:
+    if not tf.gfile.Exists(f):
+      raise ValueError('Failed to find file: ' + f)
+
   # Create a queue that produces the filenames to read.
-  filename_queue = tf.train.string_input_producer(["train.txt"])
-  reader = tf.TextLineReader()
-  key, value = reader.read(queue)
-  filename, label = tf.decode_csv(value, [["path"],[1]])
-  jpeg = tf.read_file(filename)
-  reshaped_image = tf.image.decode_jpeg(jpeg, channel=3)
+  filename_queue = tf.train.string_input_producer(filenames)
+
+  # Read examples from files in the filename queue.
+  read_input = read_cifar10(filename_queue)
+  reshaped_image = tf.cast(read_input.uint8image, tf.float32)
 
   height = IMAGE_SIZE
   width = IMAGE_SIZE
