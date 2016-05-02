@@ -7,7 +7,7 @@ import main3
 
 def main(ckpt_path):
     with tf.Graph().as_default():
-        images, labels, filename = momo_input.load_data_for_test(['test.txt'], 88)
+        images, labels, filename = momo_input.load_data_for_test(['test.txt'], 100)
         print 'start', images, labels
         keep_prob = tf.placeholder("float")
 

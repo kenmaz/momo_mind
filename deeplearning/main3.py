@@ -178,10 +178,13 @@ def main():
         summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph_def)
 
         for step in xrange(FLAGS.max_steps):
+
+            for i in range(716/FLAGS.batch_size):
+                sess.run([train_op, filename], feed_dict={keep_prob: 0.5})
+
             start_time = time.time()
             _, loss_result, acc_res = sess.run([train_op, loss_value, acc], feed_dict={keep_prob: 0.5})
             duration = time.time() - start_time
-
             #assert not np.isnan(loss_result), 'Model diverged with loss = NaN'
 
             if step % 10 == 0:
@@ -201,15 +204,10 @@ def main():
                     keep_prob: 1.0})
                 summary_writer.add_summary(summary_str, step)
 
-                """
-                # Save the model checkpoint periodically.
-                if step % 1000 == 0 or (step + 1) == FLAGS.max_steps:
-                    checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
-                    saver.save(sess, checkpoint_path, global_step=step)
-                """
-            checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
-            saver.save(sess, checkpoint_path, global_step=step)
-            print 'saved', checkpoint_path
+            # Save the model checkpoint periodically.
+            if step % 100 == 0 or (step + 1) == FLAGS.max_steps:
+                checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
+                saver.save(sess, checkpoint_path, global_step=step)
 
 if __name__ == '__main__':
     main()
