@@ -18,33 +18,36 @@ def show(img):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def load_data(csv, batch_size):
-    queue = tf.train.string_input_producer(csv, shuffle=True)
+def load_data_for_test(csv, batch_size):
+    return load_data(csv, batch_size, shuffle = False, distored = False)
+
+def load_data(csv, batch_size, shuffle = True, distored = True):
+    queue = tf.train.string_input_producer(csv, shuffle=shuffle)
     reader = tf.TextLineReader()
     key, value = reader.read(queue)
     filename, label = tf.decode_csv(value, [["path"],[1]], field_delim=" ")
-    tf.Print(filename, [filename], message='this is message')
 
     label = tf.cast(label, tf.int64)
     label = tf.one_hot(label, depth = NUM_CLASS, on_value = 1.0, off_value = 0.0, axis = -1)
 
     jpeg = tf.read_file(filename)
-    distorted_image = tf.image.decode_jpeg(jpeg, channels=3)
-    distorted_image = tf.reshape(distorted_image, [IMAGE_ORG_SIZE, IMAGE_ORG_SIZE, 3])
-    distorted_image = tf.image.resize_images(distorted_image, IMAGE_SIZE, IMAGE_SIZE)
-    distorted_image = tf.image.random_flip_left_right(distorted_image)
-    distorted_image = tf.image.random_brightness(distorted_image, max_delta=0.1)
-    distorted_image = tf.image.random_contrast(distorted_image, lower=0.2, upper=1.8)
-    float_image = tf.image.per_image_whitening(distorted_image)
-    #float_image = distorted_image
+    image = tf.image.decode_jpeg(jpeg, channels=3)
+    image = tf.reshape(image, [IMAGE_ORG_SIZE, IMAGE_ORG_SIZE, 3])
+    image = tf.image.resize_images(image, IMAGE_SIZE, IMAGE_SIZE)
+
+    if distored:
+        image = tf.image.random_flip_left_right(image)
+        image = tf.image.random_brightness(image, max_delta=0.1)
+        image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
+
+    float_image = tf.image.per_image_whitening(image)
 
     # Ensure that the random shuffling has good mixing properties.
     min_fraction_of_examples_in_queue = 0.4
     min_queue_examples = int(NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN * min_fraction_of_examples_in_queue)
-
     return _generate_image_and_label_batch(float_image, label, filename,
         min_queue_examples, batch_size,
-        shuffle=True)
+        shuffle=shuffle)
 
 def _generate_image_and_label_batch(image, label, filename, min_queue_examples,
                                     batch_size, shuffle):
@@ -88,7 +91,10 @@ def main2():
         res_list = sess.run(images)
         for res in res_list:
             res = cv2.cvtColor(res, cv2.COLOR_RGB2BGR)
-            show(res)
+            #show(res)
+        res_label = sess.run(labels)
+        for label in res_label:
+            print label
 
 if __name__ == '__main__':
     main2()
