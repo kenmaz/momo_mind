@@ -189,7 +189,7 @@ def make_graph(images, labels, keep_prob):
 def main():
 
     with tf.Graph().as_default():
-        images, labels = momo_input.load_data([FLAGS.train], FLAGS.batch_size)
+        images, labels, filename = momo_input.load_data([FLAGS.train], FLAGS.batch_size)
         print 'start', images, labels
 
         keep_prob = tf.placeholder("float")
