@@ -9,8 +9,8 @@ import variation
 import random
 
 NUM_CLASS = 5
-IMAGE_ORG_SIZE = 112
-IMAGE_SIZE = 28
+IMAGE_SIZE = 112
+INPUT_SIZE = 28
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 500
 
 def show(img):
@@ -32,22 +32,32 @@ def load_data(csv, batch_size, shuffle = True, distored = True):
 
     jpeg = tf.read_file(filename)
     image = tf.image.decode_jpeg(jpeg, channels=3)
-    image = tf.reshape(image, [IMAGE_ORG_SIZE, IMAGE_ORG_SIZE, 3])
-    image = tf.image.resize_images(image, IMAGE_SIZE, IMAGE_SIZE)
+    #image = tf.cast(image, tf.float32)
+    image.set_shape([IMAGE_SIZE, IMAGE_SIZE, 3])
 
     if distored:
+        cropsize = random.randint(INPUT_SIZE, INPUT_SIZE + (IMAGE_SIZE - INPUT_SIZE) / 2)
+        framesize = INPUT_SIZE + (cropsize - INPUT_SIZE) * 2
+        image = tf.image.resize_image_with_crop_or_pad(image, framesize, framesize)
+        image = tf.random_crop(image, [cropsize, cropsize, 3])
         image = tf.image.random_flip_left_right(image)
-        image = tf.image.random_brightness(image, max_delta=0.1)
-        image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
+        image = tf.image.random_brightness(image, max_delta=0.4)
+        image = tf.image.random_contrast(image, lower=0.6, upper=1.4)
+        image = tf.image.random_hue(image, max_delta=0.04)
+        image = tf.image.random_saturation(image, lower=0.6, upper=1.4)
 
-    float_image = tf.image.per_image_whitening(image)
+    #image = tf.image.resize_images(image, INPUT_SIZE, INPUT_SIZE)
 
     # Ensure that the random shuffling has good mixing properties.
     min_fraction_of_examples_in_queue = 0.4
     min_queue_examples = int(NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN * min_fraction_of_examples_in_queue)
-    return _generate_image_and_label_batch(float_image, label, filename,
-        min_queue_examples, batch_size,
-        shuffle=shuffle)
+
+    return _generate_image_and_label_batch(
+            image,
+            label,
+            filename,
+            min_queue_examples, batch_size,
+            shuffle=shuffle)
 
 def _generate_image_and_label_batch(image, label, filename, min_queue_examples,
                                     batch_size, shuffle):
@@ -81,21 +91,31 @@ def _generate_image_and_label_batch(image, label, filename, min_queue_examples,
 
 def main2():
     with tf.Graph().as_default():
-        images, labels, filename = load_data(['train.txt'], 30)
+        images, labels, filename = load_data_for_test(['train.txt'], 1)
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
         tf.train.start_queue_runners(sess)
-        res_names = sess.run(filename)
-        #for name in res_names:
-            #print name
-        res_list = sess.run(images)
-        for res in res_list:
-            res = cv2.cvtColor(res, cv2.COLOR_RGB2BGR)
-            #show(res)
-        res_label = sess.run(labels)
-        for label in res_label:
+
+        res_imgs, res_lables, res_names = sess.run([images, labels, filename])
+        for name in res_names:
+            print name
+        for img in res_imgs:
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            #show(img)
+            print img.shape
+            img = np.array(img)
+            print img.shape
+            #print img
+            show(img)
+        for label in res_lables:
             print label
 
 if __name__ == '__main__':
     main2()
+
+    path = sys.argv[1]
+    print path
+    img = cv2.imread(path)
+    print img.shape
+    show(img)
 
