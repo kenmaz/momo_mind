@@ -32,7 +32,7 @@ def load_data(csv, batch_size, shuffle = True, distored = True):
 
     jpeg = tf.read_file(filename)
     image = tf.image.decode_jpeg(jpeg, channels=3)
-    #image = tf.cast(image, tf.float32)
+    image = tf.cast(image, tf.float32)
     image.set_shape([IMAGE_SIZE, IMAGE_SIZE, 3])
 
     if distored:
@@ -46,7 +46,8 @@ def load_data(csv, batch_size, shuffle = True, distored = True):
         image = tf.image.random_hue(image, max_delta=0.04)
         image = tf.image.random_saturation(image, lower=0.6, upper=1.4)
 
-    #image = tf.image.resize_images(image, INPUT_SIZE, INPUT_SIZE)
+    image = tf.image.resize_images(image, INPUT_SIZE, INPUT_SIZE)
+    image = tf.image.per_image_whitening(image)
 
     # Ensure that the random shuffling has good mixing properties.
     min_fraction_of_examples_in_queue = 0.4
