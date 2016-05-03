@@ -137,16 +137,6 @@ def accuracy(logits, labels):
     tf.scalar_summary("accuracy", accuracy)
     return accuracy
 
-def names():
-    names = {
-      0: "reni",
-      1: "kanako",
-      2: "shiori",
-      3: "arin",
-      4: "momoka",
-    }
-    return names
-
 def show(img):
     return
     cv2.imshow('img', img)

@@ -4,6 +4,7 @@ import sys
 import tensorflow as tf
 import momo_input
 import main3
+import numpy as np
 
 def main(ckpt_path):
     with tf.Graph().as_default():
@@ -20,8 +21,23 @@ def main(ckpt_path):
         saver.restore(sess, ckpt_path)
         tf.train.start_queue_runners(sess)
 
-        acc_res, filename_res = sess.run([acc, filename], feed_dict={keep_prob: 0.5})
-        print acc_res
+        goods = []
+        bads = []
+        acc_res, filename_res, actual_res, expect_res = sess.run([acc, filename, logits, labels], feed_dict={keep_prob: 0.5})
+        for idx, (act, exp) in enumerate(zip(actual_res, expect_res)):
+            if np.argmax(act) == np.argmax(exp):
+                goods.append(filename_res[idx])
+            else:
+                bads.append(filename_res[idx])
+        print 'good'
+        for f in goods:
+            print 'cp',f,'out_goods'
+        print 'bad'
+        for f in bads:
+            print 'cp',f,'out_bads'
+        #correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
+
+        print 'accuracy', acc_res
 
 if __name__ == '__main__':
     ckpt_path = sys.argv[1]
