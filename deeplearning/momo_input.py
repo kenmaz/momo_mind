@@ -92,7 +92,7 @@ def _generate_image_and_label_batch(image, label, filename, min_queue_examples,
 
 def main2():
     with tf.Graph().as_default():
-        images, labels, filename = load_data_for_test(['train.txt'], 1)
+        images, labels, filename = load_data_for_test(['test.txt'], 100)
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
         tf.train.start_queue_runners(sess)
