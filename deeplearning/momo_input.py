@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+import os
 import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow.python.platform
 import variation
 import random
+from datetime import datetime
 
 NUM_CLASS = 5
 IMAGE_SIZE = 112
-INPUT_SIZE = 28
+INPUT_SIZE = 96
+DST_INPUT_SIZE = 28
+#DST_INPUT_SIZE = 96
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 500
 
 def show(img):
@@ -41,12 +45,12 @@ def load_data(csv, batch_size, shuffle = True, distored = True):
         image = tf.image.resize_image_with_crop_or_pad(image, framesize, framesize)
         image = tf.random_crop(image, [cropsize, cropsize, 3])
         image = tf.image.random_flip_left_right(image)
-        image = tf.image.random_brightness(image, max_delta=0.4)
-        image = tf.image.random_contrast(image, lower=0.6, upper=1.4)
+        image = tf.image.random_brightness(image, max_delta=0.8)
+        image = tf.image.random_contrast(image, lower=0.8, upper=1.0)
         image = tf.image.random_hue(image, max_delta=0.04)
         image = tf.image.random_saturation(image, lower=0.6, upper=1.4)
 
-    image = tf.image.resize_images(image, INPUT_SIZE, INPUT_SIZE)
+    image = tf.image.resize_images(image, DST_INPUT_SIZE, DST_INPUT_SIZE)
     image = tf.image.per_image_whitening(image)
 
     # Ensure that the random shuffling has good mixing properties.
@@ -85,38 +89,68 @@ def _generate_image_and_label_batch(image, label, filename, min_queue_examples,
             capacity=min_queue_examples + 3 * batch_size)
 
     # Display the training images in the visualizer.
-    tf.image_summary('images', images)
+    tf.image_summary('images', images, max_images = 100)
 
     labels = tf.reshape(label_batch, [batch_size, NUM_CLASS])
     return images, labels, filename
 
+def test_show(path):
+    print path
+    img = cv2.imread(path)
+    print img.shape
+    print img.dtype
+    print img
+    cv2.imshow('img', img)
+
 def main2():
     with tf.Graph().as_default():
-        images, labels, filename = load_data_for_test(['test.txt'], 100)
+        images, labels, filename = load_data(['train_1.txt'], 100)
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
         tf.train.start_queue_runners(sess)
 
+        out_dir = 'out_test.%s' % datetime.now().isoformat()
+        os.mkdir(out_dir)
+
+        ri,rl,rf = sess.run([images, labels, filename])
+        for idx, res in enumerate(zip(ri,rl,rf)):
+            name = res[2]
+            img = res[0]
+
+            """
+            print img
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            img = np.array(img, dtype='uint8')
+            print img
+            print img.dtype
+            cv2.imshow('img', img)
+            """
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            img = np.array(img, dtype='uint8')
+            dst = os.path.join(out_dir, '%s_%s' % (idx, os.path.basename(name)))
+            print dst
+            cv2.imwrite(dst, img)
+
+        """
         res_imgs, res_lables, res_names = sess.run([images, labels, filename])
         for name in res_names:
             print name
         for img in res_imgs:
             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-            #show(img)
-            print img.shape
-            img = np.array(img)
-            print img.shape
-            #print img
-            show(img)
+            img = np.array(img, dtype='uint8')
+            print img
+            print img.dtype
+            cv2.imshow('img', img)
         for label in res_lables:
             print label
+
+        test_show(res_names[0])
+
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        """
 
 if __name__ == '__main__':
     main2()
 
-    path = sys.argv[1]
-    print path
-    img = cv2.imread(path)
-    print img.shape
-    show(img)
 

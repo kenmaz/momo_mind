@@ -30,8 +30,8 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('train', 'train.txt', 'File name of train data')
 flags.DEFINE_string('test', 'test.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
-flags.DEFINE_integer('max_steps', 1000, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 30, 'Batch size Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('max_steps', 1000000, 'Number of steps to run trainer.')
+flags.DEFINE_integer('batch_size', 120, 'Batch size Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 #flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
 
@@ -75,6 +75,7 @@ def inference(x_image, keep_prob):
     # プーリング層1の作成
     with tf.name_scope('pool1') as scope:
         h_pool1 = max_pool_2x2(h_conv1)
+        #h_pool1 = tf.nn.dropout(h_pool1, keep_prob)
         h_pool1 = tf_print(h_pool1, 'h_pool1')
 
     # 畳み込み層2の作成
@@ -87,6 +88,7 @@ def inference(x_image, keep_prob):
     # プーリング層2の作成
     with tf.name_scope('pool2') as scope:
         h_pool2 = max_pool_2x2(h_conv2)
+        #h_pool2 = tf.nn.dropout(h_pool2, keep_prob)
         h_pool2 = tf_print(h_pool2, 'h_pool2')
 
     # 全結合層1の作成
@@ -160,7 +162,7 @@ def main():
 
         acc = accuracy(logits, labels)
 
-        saver = tf.train.Saver()
+        saver = tf.train.Saver(max_to_keep = FLAGS.max_steps)
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
         tf.train.start_queue_runners(sess)
@@ -169,8 +171,8 @@ def main():
 
         for step in xrange(FLAGS.max_steps):
 
-            for i in range(716/FLAGS.batch_size):
-                sess.run([train_op, filename], feed_dict={keep_prob: 0.5})
+            #for i in range(716/FLAGS.batch_size):
+            #    sess.run([train_op, filename], feed_dict={keep_prob: 0.5})
 
             start_time = time.time()
             _, loss_result, acc_res = sess.run([train_op, loss_value, acc], feed_dict={keep_prob: 0.5})
