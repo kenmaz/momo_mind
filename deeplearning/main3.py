@@ -75,7 +75,7 @@ def inference(x_image, keep_prob):
     # プーリング層1の作成
     with tf.name_scope('pool1') as scope:
         h_pool1 = max_pool_2x2(h_conv1)
-        #h_pool1 = tf.nn.dropout(h_pool1, keep_prob)
+        h_pool1 = tf.nn.dropout(h_pool1, keep_prob)
         h_pool1 = tf_print(h_pool1, 'h_pool1')
 
     # 畳み込み層2の作成
@@ -88,7 +88,7 @@ def inference(x_image, keep_prob):
     # プーリング層2の作成
     with tf.name_scope('pool2') as scope:
         h_pool2 = max_pool_2x2(h_conv2)
-        #h_pool2 = tf.nn.dropout(h_pool2, keep_prob)
+        h_pool2 = tf.nn.dropout(h_pool2, keep_prob)
         h_pool2 = tf_print(h_pool2, 'h_pool2')
 
     # 全結合層1の作成
@@ -102,9 +102,9 @@ def inference(x_image, keep_prob):
 
         # dropoutの設定
         # 途中でNaNになってvalidationにひっかかるのでコメントアウト
-        #h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
-        #h_fc1_drop = tf_print(h_fc1_drop, 'h_fc1_drop')
-        h_fc1_drop = h_fc1
+        h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+        h_fc1_drop = tf_print(h_fc1_drop, 'h_fc1_drop')
+        #h_fc1_drop = h_fc1
 
     # 全結合層2の作成
     with tf.name_scope('fc2') as scope:
@@ -175,7 +175,7 @@ def main():
             #    sess.run([train_op, filename], feed_dict={keep_prob: 0.5})
 
             start_time = time.time()
-            _, loss_result, acc_res = sess.run([train_op, loss_value, acc], feed_dict={keep_prob: 0.5})
+            _, loss_result, acc_res = sess.run([train_op, loss_value, acc], feed_dict={keep_prob: 0.9})
             duration = time.time() - start_time
             #assert not np.isnan(loss_result), 'Model diverged with loss = NaN'
 
