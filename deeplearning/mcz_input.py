@@ -36,7 +36,7 @@ def variation(src):
     for flip in flips:
         for ratio in zoom_ratios:
             for gamma in gammas:
-                print 'zoom:%f flip:%s, gamma:%s' % (ratio, flip, gamma)
+                #print 'zoom:%f flip:%s, gamma:%s' % (ratio, flip, gamma)
                 img = src
                 if not ratio ==1.0:
                     img = zoom(img, ratio)
