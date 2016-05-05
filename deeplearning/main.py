@@ -20,9 +20,9 @@ print LOGDIR
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string('train', 'train.txt', 'File name of train data')
+flags.DEFINE_string('train', 'train_bk2.txt', 'File name of train data')
 #flags.DEFINE_string('train', 'train_1.txt', 'File name of train data')
-flags.DEFINE_string('test', 'test.txt', 'File name of train data')
+flags.DEFINE_string('test', 'test_bk2.txt', 'File name of train data')
 #flags.DEFINE_string('test', 'test_osaretai.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 #flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
