@@ -16,40 +16,48 @@ h_conv1 = None
 h_conv2 = None
 h_pool2 = None
 
+def tf_print(tensor, name):
+    print name, tensor
+    return tf.Print(tensor, [tensor], '%s:' % name)
+
+def rotate(img):
+    img = np.fliplr(img)
+    h,w,ch = img.shape
+    rotate = np.zeros((28,28,3))
+    for y, rows in enumerate(img):
+        for x, col in enumerate(rows):
+            rotate[27-x][y] = col
+    return rotate
+
+# imgを90度回転&左右反転して書き出し
+def dump_image(img, outdir = 'out_img'):
+    if not os.path.exists(outdir):
+      os.mkdir(outdir)
+
+    # original
+    org_path = os.path.join(outdir, 'org_img.png')
+    cv2.imwrite(org_path, img)
+
+    # rotate & split by channel
+    img = rotate(img)
+    rgb = cv2.split(img)
+    cv2.imwrite(os.path.join(outdir, 'img_r.png'), rgb[0])
+    cv2.imwrite(os.path.join(outdir, 'img_g.png'), rgb[1])
+    cv2.imwrite(os.path.join(outdir, 'img_b.png'), rgb[2])
+
 # [1,28,28,32]
 def dump_hconv(ary, outdir = 'out_hconv1'):
     if not os.path.exists(outdir):
       os.mkdir(outdir)
 
-    #print ary.shape
     t0 = ary.transpose()
     for i, t1 in enumerate(t0):
       path = os.path.join(outdir, '%s.png' % i)
-      #print t1
       t2 = [n*255 for n in t1]
       t3 = np.array(t2)
-      h,w,ch = t3.shape
-      M = cv2.getRotationMatrix2D((w/2,h/2),-90,1)
-      t4 = cv2.warpAffine(t3, M, (w,h))
-      #print t2
-      cv2.imwrite(path, t4)
-    return
+      cv2.imwrite(path, t3)
 
-    #ary = (5,5,3,32)
-    t = ary.transpose() # => (32,3,5,5)
-    for i, t0 in enumerate(t):
-      path = os.path.join(outdir, '%s.png' % i)
-      t1 = t0.transpose() # => (5,5,3)
-      #print 't1:%s' % t1[0][0]
-      t2 = map(lambda n:(map(lambda m:sum(m), n)), t1)
-      #print 't2:%s' % t2[0][0]
-      t4 = map(lambda n:(map(lambda m:nega_posi_to_rgb(m), n)), t2)
-      #print 't4:%s' % t4[0][0]
-      cv2.imwrite(path, np.array(t4))
-      #print path
-
-
-def dump_wconv(ary, outdir):
+def dump_wconv_(ary, outdir):
     # RGBの合計値を出力
     if not os.path.exists(outdir):
       os.mkdir(outdir)
@@ -64,28 +72,34 @@ def dump_wconv(ary, outdir):
       #print 't2:%s' % t2[0][0]
       t4 = map(lambda n:(map(lambda m:nega_posi_to_rgb(m), n)), t2)
       #print 't4:%s' % t4[0][0]
+      #t5 = np.fliplr(t4)
       cv2.imwrite(path, np.array(t4))
       #print path
 
-def dump(ary):
-    # RGBのBのfilterだけをimgとして出力
-    outdir = 'out_filter'
+def dump_wconv(ary, outdir):
+    # RGBの合計値を出力
     if not os.path.exists(outdir):
       os.mkdir(outdir)
 
     #ary = (5,5,3,32)
     t = ary.transpose() # => (32,3,5,5)
     for i, t0 in enumerate(t):
-      path = os.path.join(outdir, '%s.png' % i)
-      t1 = t0.transpose() # => (5,5,3)
-      t2 = t1.transpose() # => (3,5,5)
-      t3 = t2[0]
-      #print t3
-      # [-1..0..+1] を [blue...black....red] にマッピング
-      t4 = map(lambda n:(map(lambda m:nega_posi_to_rgb(m), n)), t3)
-      #print t4
-      cv2.imwrite(path, np.array(t4))
-      #print path
+        for j, t1 in enumerate(t0):
+            t2 = map(lambda n:(map(lambda m:nega_posi_to_rgb(m), n)), t1)
+            #[5,5]
+            path = os.path.join(outdir, '%s_%s.png' % (i, j))
+            cv2.imwrite(path, np.array(t2))
+            """
+            #t1 = t0.transpose() # => (5,5,3)
+            #print 't1:%s' % t1[0][0]
+            t2 = map(lambda n:(map(lambda m:sum(m), n)), t1)
+            #print 't2:%s' % t2[0][0]
+            t4 = map(lambda n:(map(lambda m:nega_posi_to_rgb(m), n)), t2)
+            #print 't4:%s' % t4[0][0]
+            #t5 = np.fliplr(t4)
+            cv2.imwrite(path, np.array(t4))
+            #print path
+            """
 
 def nega_posi_to_rgb(n):
   seed = [0.0, 0.0, 0.0]
@@ -99,7 +113,6 @@ def imgshow(img):
     cv2.imshow('img',img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
 
 def inference(images_placeholder, keep_prob):
 
@@ -134,10 +147,13 @@ def inference(images_placeholder, keep_prob):
 
     # プーリング層
     with tf.name_scope('pool1') as scope:
+        global h_pool1
         h_pool1 = max_pool_2x2(h_conv1)
         #14x14,32ch image
 
     with tf.name_scope('conv2') as scope:
+        global W_conv2
+        global b_conv2
         global h_conv2
         W_conv2 = weight_variable([5, 5, 32, 64])
         b_conv2 = bias_variable([64])
@@ -170,7 +186,7 @@ def inference(images_placeholder, keep_prob):
 
     return y_conv
 
-if __name__ == '__main__':
+def main():
     img_files = []
     test_image = []
 
@@ -181,6 +197,7 @@ if __name__ == '__main__':
         img_files.append(filepath)
         img = cv2.imread(filepath)
         img = cv2.resize(img, (28, 28))
+        dump_image(img, 'out_0_img28')
         test_image.append(img.flatten().astype(np.float32)/255.0)
 
     test_image = np.asarray(test_image)
@@ -194,8 +211,9 @@ if __name__ == '__main__':
     sess.run(tf.initialize_all_variables())
     saver.restore(sess, "model.ckpt")
 
-    dump_wconv(sess.run(W_conv1), 'out_rgb_mix')
     #(5, 5, 3, 32)
+    dump_wconv(W_conv1.eval(), 'out_1_w_conv1_rgb_mix')
+    dump_wconv(W_conv2.eval(), 'out_2_w_conv2_rgb_mix')
 
     names = {
       0: "reni",
@@ -209,13 +227,16 @@ if __name__ == '__main__':
         print img_files[i]
 
         h_conv1_res = h_conv1.eval(feed_dict={images_placeholder: [image]})
-        dump_hconv(h_conv1_res)
+        dump_hconv(h_conv1_res, 'out_3_hconv1')
+
+        h_pool1_res = h_pool1.eval(feed_dict={images_placeholder: [image]})
+        dump_hconv(h_pool1_res, 'out_4_hpool1')
 
         h_conv2_res = h_conv2.eval(feed_dict={images_placeholder: [image]})
-        dump_hconv(h_conv2_res, 'out_hconv2')
+        dump_hconv(h_conv2_res, 'out_5_hconv2')
 
         h_pool2_res = h_pool2.eval(feed_dict={images_placeholder: [image]})
-        dump_hconv(h_pool2_res, 'out_hpool2')
+        dump_hconv(h_pool2_res, 'out_6_hpool2')
 
         softmax = logits.eval(feed_dict={images_placeholder: [image], keep_prob: 1.0 })
         #print softmax.shape
@@ -224,4 +245,16 @@ if __name__ == '__main__':
         pred = np.argmax(softmax[0])
         print names[pred]
 
+def test():
+    ary = [[1,2],
+            [3,4]]
+    ary = np.array(ary)
+    print ary
+    t0= ary.transpose()
+    print t0
+    print np.fliplr(t0)
+
+if __name__ == '__main__':
+    main()
+    #test()
 
