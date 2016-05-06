@@ -33,8 +33,8 @@ flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 def main():
     with tf.Graph().as_default():
         keep_prob = tf.placeholder("float")
-        images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = False)
 
+        images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = False)
         logits = mcz_model.inference(images, keep_prob)
         loss_value = mcz_model.loss(logits, labels)
         train_op = mcz_model.training(loss_value, FLAGS.learning_rate)
@@ -49,17 +49,6 @@ def main():
         summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph_def)
 
         for step in range(FLAGS.max_steps):
-            """
-            sess.run(train_op, feed_dict={keep_prob: 0.5})
-
-            train_accuracy = sess.run(acc, feed_dict={keep_prob: 1.0})
-            print "step %d, training accuracy %g"%(step, train_accuracy)
-
-            summary_str = sess.run(summary_op, feed_dict={keep_prob: 1.0})
-            summary_writer.add_summary(summary_str, step)
-
-            save_path = saver.save(sess, "model.ckpt")
-            """
             start_time = time.time()
             _, loss_result, acc_res = sess.run([train_op, loss_value, acc], feed_dict={keep_prob: 0.9})
             duration = time.time() - start_time
@@ -68,20 +57,14 @@ def main():
                 num_examples_per_step = FLAGS.batch_size
                 examples_per_sec = num_examples_per_step / duration
                 sec_per_batch = float(duration)
-
-                format_str = ('%s: step %d, loss = %.2f (%.1f examples/sec; %.3f '
-                'sec/batch)')
-                print (format_str % (datetime.now(), step, loss_result,
-                examples_per_sec, sec_per_batch))
-
+                format_str = ('%s: step %d, loss = %.2f (%.1f examples/sec; %.3f sec/batch)')
+                print (format_str % (datetime.now(), step, loss_result, examples_per_sec, sec_per_batch))
                 print 'acc_res', acc_res
 
             if step % 100 == 0:
-                summary_str = sess.run(summary_op,feed_dict={
-                    keep_prob: 1.0})
+                summary_str = sess.run(summary_op,feed_dict={keep_prob: 1.0})
                 summary_writer.add_summary(summary_str, step)
 
-            # Save the model checkpoint periodically.
             if step % 100 == 0 or (step + 1) == FLAGS.max_steps:
                 checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
                 saver.save(sess, checkpoint_path, global_step=step)
