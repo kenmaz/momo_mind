@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 import sys
 import cv2
+import random
 import numpy as np
 import tensorflow as tf
 
 IMAGE_SIZE = 112
+INPUT_SIZE = 96
 DST_INPUT_SIZE = 28
 NUM_CLASS = 5
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 500

@@ -34,7 +34,7 @@ def main():
     with tf.Graph().as_default():
         keep_prob = tf.placeholder("float")
 
-        images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = False)
+        images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = True)
         logits = mcz_model.inference(images, keep_prob)
         loss_value = mcz_model.loss(logits, labels)
         train_op = mcz_model.training(loss_value, FLAGS.learning_rate)
