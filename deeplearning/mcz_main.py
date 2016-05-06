@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+import os
+import time
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -27,7 +29,7 @@ flags.DEFINE_string('test', 'test_bk2.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 #flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
 flags.DEFINE_integer('max_steps', 1000, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 30, 'Batch size Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('batch_size', 120, 'Batch size Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 #flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
 
@@ -39,7 +41,7 @@ def main():
     for line in f:
         line = line.rstrip()
         l = line.split()
-        print l;
+        #print l;
         src = cv2.imread(l[0])
         imgs = mcz_input.variation(src)
         #imgs = [src]
@@ -53,7 +55,7 @@ def main():
     for (img, label) in tuple_list:
         train_image.append(img)
         train_label.append(label)
-        print 'train: %s' % label
+        #print 'train: %s' % label
 
     train_image = np.asarray(train_image)
     train_label = np.asarray(train_label)
@@ -94,10 +96,19 @@ def main():
         for step in range(FLAGS.max_steps):
             for i in range(len(train_image)/FLAGS.batch_size):
                 batch = FLAGS.batch_size*i
-                sess.run(train_op, feed_dict={
+                start_time = time.time()
+                _, loss_result = sess.run([train_op, loss_value], feed_dict={
                   images_placeholder: train_image[batch:batch+FLAGS.batch_size],
                   labels_placeholder: train_label[batch:batch+FLAGS.batch_size],
                   keep_prob: 0.5})
+                duration = time.time() - start_time
+
+                num_examples_per_step = FLAGS.batch_size
+                examples_per_sec = num_examples_per_step / duration
+                sec_per_batch = float(duration)
+
+                format_str = ('%s: step %d, loss = %.2f (%.1f examples/sec; %.3f sec/batch)')
+                print (format_str % (datetime.now(), step, loss_result, examples_per_sec, sec_per_batch))
 
             train_accuracy = sess.run(acc, feed_dict={
                 images_placeholder: train_image,
