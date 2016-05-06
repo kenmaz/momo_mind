@@ -57,7 +57,8 @@ def inference(images_placeholder, keep_prob):
     with tf.name_scope('softmax') as scope:
         y_conv=tf.nn.softmax(h_fc2)
 
-    return (y_conv, W_fc2, b_fc2, h_fc2, W_fc1, b_fc1, h_fc1, h_pool2, W_conv2)
+    #return (y_conv, W_fc2, b_fc2, h_fc2, W_fc1, b_fc1, h_fc1, h_pool2, W_conv2) #for debug
+    return y_conv
 
 def loss(logits, labels):
     cross_entropy = -tf.reduce_sum(labels*tf.log(logits))

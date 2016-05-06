@@ -30,7 +30,8 @@ def main():
     images_placeholder = tf.placeholder("float", shape=(None, pixel_size))
     keep_prob = tf.placeholder("float")
 
-    logits, w_fc2, b_fc2, h_fc2, w_fc1, b_fc1, h_fc1, h_pool2, w_conv2 = mcz_model.inference(images_placeholder, keep_prob)
+    #logits, w_fc2, b_fc2, h_fc2, w_fc1, b_fc1, h_fc1, h_pool2, w_conv2 = mcz_model.inference(images_placeholder, keep_prob) #for debug
+    logits = mcz_model.inference(images_placeholder, keep_prob)
 
     sess = tf.InteractiveSession()
     saver = tf.train.Saver()
