@@ -12,8 +12,6 @@ import mcz_input
 import mcz_model
 
 NUM_CLASSES = 5
-#IMAGE_SIZE = 112
-#IMAGE_SIZE = 56
 IMAGE_SIZE = 28
 IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * 3
 

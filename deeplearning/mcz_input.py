@@ -6,6 +6,14 @@ import numpy as np
 
 IMAGE_SIZE = 28
 
+MEMBER_NAMES = {
+    0: "reni",
+    1: "kanako",
+    2: "shiori",
+    3: "arin",
+    4: "momoka",
+}
+
 def show(img):
     cv2.imshow('img', img)
     cv2.waitKey(0)

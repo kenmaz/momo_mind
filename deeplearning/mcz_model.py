@@ -46,17 +46,18 @@ def inference(images_placeholder, keep_prob):
         W_fc1 = weight_variable([w*w*64, 1024])
         b_fc1 = bias_variable([1024])
         h_pool2_flat = tf.reshape(h_pool2, [-1, w*w*64])
-        h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
-        h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+        h_fc1 = tf.matmul(h_pool2_flat, W_fc1) + b_fc1
+        h_fc1_drop = tf.nn.dropout(tf.nn.relu(h_fc1), keep_prob)
 
     with tf.name_scope('fc2') as scope:
         W_fc2 = weight_variable([1024, NUM_CLASSES])
         b_fc2 = bias_variable([NUM_CLASSES])
+        h_fc2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
 
     with tf.name_scope('softmax') as scope:
-        y_conv=tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
+        y_conv=tf.nn.softmax(h_fc2)
 
-    return y_conv
+    return (y_conv, W_fc2, b_fc2, h_fc2, W_fc1, b_fc1, h_fc1, h_pool2, W_conv2)
 
 def loss(logits, labels):
     cross_entropy = -tf.reduce_sum(labels*tf.log(logits))
