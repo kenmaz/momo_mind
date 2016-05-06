@@ -6,6 +6,9 @@ import sys
 import os
 import math
 
+IMAGE_SIZE = 112
+INPUT_SIZE = 96
+
 def show(img):
     cv2.imshow('img',img)
     cv2.waitKey(0)
@@ -48,6 +51,13 @@ def detect_face(img_file):
   eye_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_eye.xml'))
   mouth_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_mcs_mouth.xml'))
   nose_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_mcs_nose.xml'))
+
+  exts = ['.JPG','.JPEG']
+  filename = os.path.basename(os.path.normpath(img_file))
+  (fn, ext) = os.path.splitext(filename)
+  if not ext.upper() in exts:
+    print 'skip:%s' % img_file
+    return
 
   print '..read %s' % img_file
   img = cv2.imread(img_file)
@@ -102,22 +112,31 @@ def detect_face(img_file):
     if eyes_ok and mouth_ok and nose_ok:
       if debug:
         cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,255),2)
-      filename = os.path.basename(os.path.normpath(img_file))
-      (fn, ext) = os.path.splitext(filename)
-      out_file = 'out/%s_%s.%s' % (fn, i, ext)
+
+      out_file = 'out/%s_%s.jpg' % (fn, i)
       print out_file
 
       #上下左右に10%ほど余分に切り出し(無理なら不要)
       roi_color = img[y:y+h, x:x+w]
+      print roi_color.shape
 
       margin = int(h * 0.2)
       img_w, img_h, img_ch = img.shape
       print 'margin:%s, img_w:%s img_h:%s' % (margin, img_w, img_h)
-      if not (y - margin < 0 or x - margin < 0 or y + margin > img_h or x + margin > img_w):
-        print 'make margin!'
-        roi_color = img[y - margin : y + h + margin, x - margin: x + w + margin]
+      if y - margin < 0 or x - margin < 0 or y + margin > img_h or x + margin > img_w:
+        print 'cannot make margin %s ' % out_file
+        continue
 
+      roi_color = img[y - margin : y + h + margin, x - margin: x + w + margin]
+
+      w,h,ch = roi_color.shape
+      if w < IMAGE_SIZE or h < IMAGE_SIZE:
+        print 'too small: %s' % out_file
+        continue
+
+      roi_color = cv2.resize(roi_color, (IMAGE_SIZE, IMAGE_SIZE))
       cv2.imwrite(out_file, roi_color)
+      print 'write: %s' % out_file
     else:
       print 'eye:%s mouth:%s nose:%s' % (eyes_ok, mouth_ok, nose_ok)
       #img = cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
@@ -205,6 +224,6 @@ def detect_all(dir_path):
 if __name__ == "__main__":
   param = sys.argv
   #detect_all(param[1])
-  #detect_face(param[1])
-  detect_face_rotate(param[1])
+  detect_face(param[1])
+  #detect_face_rotate(param[1])
   #validate(param[1])
