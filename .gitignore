@@ -21,3 +21,4 @@ crawler/*.json
 **/.venv
 **/pip-selfcheck.json
 **.pyc
+face_detect/bulk

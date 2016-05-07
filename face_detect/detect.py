@@ -125,9 +125,8 @@ def detect_face(img_file):
       print 'margin:%s, img_w:%s img_h:%s' % (margin, img_w, img_h)
       if y - margin < 0 or x - margin < 0 or y + margin > img_h or x + margin > img_w:
         print 'cannot make margin %s ' % out_file
-        continue
-
-      roi_color = img[y - margin : y + h + margin, x - margin: x + w + margin]
+      else:
+        roi_color = img[y - margin : y + h + margin, x - margin: x + w + margin]
 
       w,h,ch = roi_color.shape
       if w < IMAGE_SIZE or h < IMAGE_SIZE:
