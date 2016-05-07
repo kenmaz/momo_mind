@@ -10,7 +10,7 @@ import mcz_model
 def main(ckpt_path):
     with tf.Graph().as_default():
         images, labels, filename = mcz_input.load_data_for_test(['test.txt'], 100)
-        print 'start', images, labels
+        #print 'start', images, labels
         keep_prob = tf.placeholder("float")
 
         logits = mcz_model.inference(images, keep_prob)
@@ -22,9 +22,12 @@ def main(ckpt_path):
         saver.restore(sess, ckpt_path)
         tf.train.start_queue_runners(sess)
 
+        acc_res, filename_res, actual_res, expect_res = sess.run([acc, filename, logits, labels], feed_dict={keep_prob: 1.0})
+        print 'accuracy', acc_res
+        return
+
         goods = []
         bads = []
-        acc_res, filename_res, actual_res, expect_res = sess.run([acc, filename, logits, labels], feed_dict={keep_prob: 0.5})
         for idx, (act, exp) in enumerate(zip(actual_res, expect_res)):
             if np.argmax(act) == np.argmax(exp):
                 goods.append(filename_res[idx])
@@ -38,10 +41,9 @@ def main(ckpt_path):
             print 'cp',f,'out_bads'
         #correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
 
-        print 'accuracy', acc_res
 
 if __name__ == '__main__':
     ckpt_path = sys.argv[1]
-    print ckpt_path
+    #print ckpt_path
     main(ckpt_path)
 
