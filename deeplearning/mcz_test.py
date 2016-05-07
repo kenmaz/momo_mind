@@ -7,9 +7,9 @@ import tensorflow as tf
 import mcz_input
 import mcz_model
 
-def main(ckpt_path):
+def main(ckpt_path, csv = 'test.txt'):
     with tf.Graph().as_default():
-        images, labels, filename = mcz_input.load_data_for_test(['test.txt'], 100)
+        images, labels, filename = mcz_input.load_data_for_test([csv], 100)
         #print 'start', images, labels
         keep_prob = tf.placeholder("float")
 
@@ -44,6 +44,7 @@ def main(ckpt_path):
 
 if __name__ == '__main__':
     ckpt_path = sys.argv[1]
+    csv = sys.argv[2]
     #print ckpt_path
-    main(ckpt_path)
+    main(ckpt_path, csv)
 
