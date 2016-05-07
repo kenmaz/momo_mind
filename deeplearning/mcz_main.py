@@ -40,7 +40,7 @@ def main():
         train_op = mcz_model.training(loss_value, FLAGS.learning_rate)
         acc = mcz_model.accuracy(logits, labels)
 
-        saver = tf.train.Saver()
+        saver = tf.train.Saver(max_to_keep = 0)
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
         tf.train.start_queue_runners(sess)
@@ -65,7 +65,7 @@ def main():
                 summary_str = sess.run(summary_op,feed_dict={keep_prob: 1.0})
                 summary_writer.add_summary(summary_str, step)
 
-            if step % 100 == 0 or (step + 1) == FLAGS.max_steps:
+            if step % 1000 == 0 or (step + 1) == FLAGS.max_steps:
                 checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
                 saver.save(sess, checkpoint_path, global_step=step)
 
