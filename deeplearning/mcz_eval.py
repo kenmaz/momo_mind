@@ -3,11 +3,9 @@
 
 import sys
 import numpy as np
-import tensorflow as tf
 import cv2
+import tensorflow as tf #cv2より前にimportするとcv2.imreadになぜか失敗する(Noneを返す)
 import os
-import operator
-import scipy.ndimage
 import mcz_input
 import mcz_model
 
