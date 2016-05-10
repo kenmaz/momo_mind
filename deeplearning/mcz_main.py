@@ -13,9 +13,6 @@ import os
 import mcz_input
 import mcz_model
 
-IMAGE_SIZE = 28
-IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * 3
-
 LOGDIR = '/tmp/data.%s' % datetime.now().isoformat()
 print LOGDIR
 
@@ -35,7 +32,7 @@ def main():
         keep_prob = tf.placeholder("float")
 
         images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = True)
-        logits = mcz_model.inference(images, keep_prob)
+        logits = mcz_model.inference_deep(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
         loss_value = mcz_model.loss(logits, labels)
         train_op = mcz_model.training(loss_value, FLAGS.learning_rate)
         acc = mcz_model.accuracy(logits, labels)
