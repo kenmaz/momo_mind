@@ -192,7 +192,9 @@ def max_pool_2x2(x):
                         strides=[1, 2, 2, 1], padding='SAME')
 
 def loss(logits, labels):
-    cross_entropy = -tf.reduce_sum(labels*tf.log(logits))
+    #http://qiita.com/ikki8412/items/3846697668fc37e3b7e0
+    #cross_entropy = -tf.reduce_sum(labels*tf.log(logits))
+    cross_entropy = -tf.reduce_sum(labels*tf.log(tf.clip_by_value(logits,1e-10,1.0)))
     tf.scalar_summary("cross_entropy", cross_entropy)
     return cross_entropy
 
