@@ -44,83 +44,74 @@ def inference(images_placeholder, keep_prob, image_size, num_classes):
 def inference_deep2(x_image, keep_prob, image_size, num_classes):
 
     with tf.name_scope('conv1_1') as scope:
-        W_conv1_1 = weight_variable([3, 3, 3, 64])
-        b_conv1_1 = bias_variable([64])
+        W_conv1_1 = weight_variable([3, 3, 3, 32])
+        b_conv1_1 = bias_variable([32])
         h_conv1_1 = tf.nn.relu(conv2d(x_image, W_conv1_1) + b_conv1_1)
-        h_conv1_1 = tf_print(h_conv1_1, 'h_conv1_1')
+        print h_conv1_1
 
     with tf.name_scope('pool1') as scope:
         h_pool1 = max_pool_2x2(h_conv1_1)
-        h_pool1 = tf_print(h_pool1, 'h_pool1')
+        print h_pool1
 
     with tf.name_scope('conv2_1') as scope:
-        W_conv2_1 = weight_variable([3, 3, 64, 128])
-        b_conv2_1 = bias_variable([128])
+        W_conv2_1 = weight_variable([3, 3, 32, 64])
+        b_conv2_1 = bias_variable([64])
         h_conv2_1 = tf.nn.relu(conv2d(h_pool1, W_conv2_1) + b_conv2_1)
-        h_conv2_1 = tf_print(h_conv2_1, 'h_conv2_1')
+        print h_conv2_1
 
     with tf.name_scope('pool2') as scope:
         h_pool2 = max_pool_2x2(h_conv2_1)
-        h_pool2 = tf_print(h_pool2, 'h_pool2')
+        print h_pool2
 
     with tf.name_scope('conv3_1') as scope:
-        W_conv3_1 = weight_variable([3, 3, 128, 256])
-        b_conv3_1 = bias_variable([256])
+        W_conv3_1 = weight_variable([3, 3, 64, 128])
+        b_conv3_1 = bias_variable([128])
         h_conv3_1 = tf.nn.relu(conv2d(h_pool2, W_conv3_1) + b_conv3_1)
-        h_conv3_1 = tf_print(h_conv3_1, 'h_conv3_1')
+        print h_conv3_1
 
     with tf.name_scope('pool3') as scope:
         h_pool3 = max_pool_2x2(h_conv3_1)
-        h_pool3 = tf_print(h_pool3, 'h_pool3')
+        print h_pool3
 
     with tf.name_scope('conv4_1') as scope:
-        W_conv4_1 = weight_variable([3, 3, 256, 512])
-        b_conv4_1 = bias_variable([512])
+        W_conv4_1 = weight_variable([3, 3, 128, 256])
+        b_conv4_1 = bias_variable([256])
         h_conv4_1 = tf.nn.relu(conv2d(h_pool3, W_conv4_1) + b_conv4_1)
-        h_conv4_1 = tf_print(h_conv4_1, 'h_conv4_1')
+        print h_conv4_1
 
     with tf.name_scope('pool4') as scope:
         h_pool4 = max_pool_2x2(h_conv4_1)
-        h_pool4 = tf_print(h_pool4, 'h_pool4')
-
-    with tf.name_scope('conv5_1') as scope:
-        W_conv5_1 = weight_variable([3, 3, 512, 512])
-        b_conv5_1 = bias_variable([512])
-        h_conv5_1 = tf.nn.relu(conv2d(h_pool4, W_conv5_1) + b_conv5_1)
-        h_conv5_1 = tf_print(h_conv5_1, 'h_conv5_1')
-
-    with tf.name_scope('pool5') as scope:
-        h_pool5 = max_pool_2x2(h_conv5_1)
-        h_pool5 = tf_print(h_pool5, 'h_pool5')
+        print h_pool4
 
     with tf.name_scope('fc6') as scope:
-        w = image_size / pow(2,5) #96/2^5=3
-        W_fc6 = weight_variable([w*w*512, 4096])
-        b_fc6 = bias_variable([4096])
-        h_pool5_flat = tf.reshape(h_pool5, [-1, w*w*512])
-        h_fc6 = tf.nn.relu(tf.matmul(h_pool5_flat, W_fc6) + b_fc6)
-        h_fc6 = tf_print(h_fc6, 'h_fc6')
+        w = image_size / pow(2,4)
+        W_fc6 = weight_variable([w*w*256, 1024])
+        print W_fc6.get_shape()
+        b_fc6 = bias_variable([1024])
+        h_pool4_flat = tf.reshape(h_pool4, [-1, w*w*256])
+        h_fc6 = tf.nn.relu(tf.matmul(h_pool4_flat, W_fc6) + b_fc6)
+        print h_fc6
 
         h_fc6 = tf.nn.dropout(h_fc6, keep_prob)
-        h_fc6 = tf_print(h_fc6, 'h_fc6_drop')
+        print h_fc6
 
     with tf.name_scope('fc7') as scope:
-        W_fc7 = weight_variable([4096, 4096])
-        b_fc7 = bias_variable([4096])
+        W_fc7 = weight_variable([1024, 256])
+        b_fc7 = bias_variable([256])
         h_fc7 = tf.nn.relu(tf.matmul(h_fc6, W_fc7) + b_fc7)
-        h_fc7 = tf_print(h_fc7, 'h_fc7')
+        print h_fc7
 
         h_fc7 = tf.nn.dropout(h_fc7, keep_prob)
-        h_fc7 = tf_print(h_fc7, 'h_fc7_drop')
+        print h_fc7
 
     with tf.name_scope('fc8') as scope:
-        W_fc8 = weight_variable([4096, num_classes])
+        W_fc8 = weight_variable([256, num_classes])
         b_fc8 = bias_variable([num_classes])
-        b_fc8 = tf_print(b_fc8, 'b_fc8')
+        print b_fc8
 
     with tf.name_scope('softmax') as scope:
         y_conv = tf.nn.softmax(tf.matmul(h_fc7, W_fc8) + b_fc8)
-        y_conv = tf_print(y_conv, 'y_conv')
+        print y_conv
 
     return y_conv
 
