@@ -20,14 +20,15 @@ def main(ckpt_path, filepath):
     img_files.append(filepath)
     img = cv2.imread(filepath)
     img = cv2.resize(img, (28, 28))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     test_image.append(img.flatten().astype(np.float32)/255.0)
 
     test_image = np.asarray(test_image)
-    pixel_size = mcz_model.IMAGE_SIZE * mcz_model.IMAGE_SIZE * 3
+    pixel_size = mcz_input.DST_INPUT_SIZE * mcz_input.DST_INPUT_SIZE * 3
     images_placeholder = tf.placeholder("float", shape=(None, pixel_size))
     keep_prob = tf.placeholder("float")
 
-    logits = mcz_model.inference(images_placeholder, keep_prob)
+    logits = mcz_model.inference(images_placeholder, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
 
     sess = tf.InteractiveSession()
     saver = tf.train.Saver()
