@@ -45,7 +45,7 @@ def detect_face_rotate(img_file):
             cv2.rectangle(rotated, (x, y), (x + w, y + h), (0, 0, 0), 2)
         show(rotated)
 
-def detect_face(img_file):
+def detect_face(img_file, outdir = 'out'):
   xml_dir = '/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades'
   face_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_frontalface_alt2.xml'))
   eye_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_eye.xml'))
@@ -70,6 +70,8 @@ def detect_face(img_file):
   faces = face_cascade.detectMultiScale(gray, scale, 5)
 
   debug = False
+
+  res = []
 
   for i, (x,y,w,h) in enumerate(faces):
     print '[face] %s %s' % (i, (x,y,w,h))
@@ -113,7 +115,7 @@ def detect_face(img_file):
       if debug:
         cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,255),2)
 
-      out_file = 'out/%s_%s.jpg' % (fn, i)
+      out_file = '%s/%s_%s.jpg' % (outdir, fn, i)
       print out_file
 
       #上下左右に10%ほど余分に切り出し(無理なら不要)
@@ -136,6 +138,8 @@ def detect_face(img_file):
       roi_color = cv2.resize(roi_color, (IMAGE_SIZE, IMAGE_SIZE))
       cv2.imwrite(out_file, roi_color)
       print 'write: %s' % out_file
+
+      res.append(out_file)
     else:
       print 'eye:%s mouth:%s nose:%s' % (eyes_ok, mouth_ok, nose_ok)
       #img = cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
@@ -145,6 +149,8 @@ def detect_face(img_file):
     out_file = 'out/%s' % filename
     cv2.imwrite(out_file, img)
     print out_file
+
+  return res
 
 def detect_face_frontfaces(img_file):
   #face_cascade = cv2.CascadeClassifier('/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml')

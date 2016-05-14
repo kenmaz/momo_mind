@@ -35,17 +35,27 @@ def main(ckpt_path, filepath):
     sess.run(tf.initialize_all_variables())
     saver.restore(sess, ckpt_path)
 
+    res = []
+
     for i, image in enumerate(test_image):
         print img_files[i]
         feed_dict = {images_placeholder: [image], keep_prob: 1.0 }
 
         softmax = logits.eval(feed_dict = feed_dict)
-        print [round(n * 100.0, 1) for n in softmax[0]]
+        result = softmax[0]
+        rate = [round(n * 100.0, 1) for n in result]
+        print rate
 
-        pred = np.argmax(softmax[0])
+        pred = np.argmax(result)
         print mcz_input.MEMBER_NAMES[pred]
 
+        res.append((img_files[i], pred, rate, mcz_input.MEMBER_NAMES))
+
+    sess.close()
+    return res
+
 if __name__ == '__main__':
+    print "main"
     ckpt_path = sys.argv[1]
     imgfile = sys.argv[2]
     main(ckpt_path, imgfile)
