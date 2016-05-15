@@ -21,18 +21,16 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('train', 'train.txt', 'File name of train data')
 flags.DEFINE_string('test', 'test.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
-#flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
 flags.DEFINE_integer('max_steps', 100000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('batch_size', 120, 'Batch size Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
-#flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
 
 def main(ckpt = None):
     with tf.Graph().as_default():
         keep_prob = tf.placeholder("float")
 
         images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = True)
-        logits = mcz_model.inference_deep(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
+        logits = mcz_model.inference(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
         loss_value = mcz_model.loss(logits, labels)
         train_op = mcz_model.training(loss_value, FLAGS.learning_rate)
         acc = mcz_model.accuracy(logits, labels)

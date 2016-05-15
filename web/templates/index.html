@@ -3,12 +3,23 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='mcz.css') }}"></style>
 </head>
 <body>
+  <form action="{{ url_for('upload') }}" enctype='multipart/form-data' method='post'>
+    <input type="file" name="file"/>
+    <input type="submit">
+  </form>
+
   <form action="{{ url_for('upload') }}" enctype='multipart/form-data' method='post' class="dropzone" id="upload_form">
     <div class="fallback">
       <input type="file" name="file"/>
       <input type="submit">
     </div>
   </form>
+
+  <div id="status"></div>
+
+  <table id="results">
+  </table>
+
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='dropzone.js') }}"></script>
