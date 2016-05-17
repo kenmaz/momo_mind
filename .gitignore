@@ -9,6 +9,7 @@ crawler/*.json
 **/checkpoint
 **/*.ckpt*
 **/*.png
+**/tmp
 
 **/.Python
 **/[Bb]in

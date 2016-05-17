@@ -27,7 +27,8 @@ def upload():
     input_path = '/tmp/' + uuid.uuid1().hex + ext
     print input_path
     f.save(input_path)
-    faces = detect.detect_face(input_path, 'static/tmp')
+
+    faces = detect.detect_face_rotate(input_path, 'static/tmp')
     print faces
 
     res = mcz_eval.main(faces, '../deeplearning/data/model.ckpt-15000')
