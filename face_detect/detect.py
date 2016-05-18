@@ -20,12 +20,14 @@ def detect_face_rotate(img_file, out_dir = 'out'):
     filename = os.path.basename(os.path.normpath(img_file))
     (fn, ext) = os.path.splitext(filename)
     img_dir = '%s/%s' % (out_dir, fn)
+    """
     if not os.path.exists(img_dir):
         os.mkdir(img_dir)
+    """
 
-    img = cv2.imread(img_file)
-    rows, cols, colors = img.shape
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    input_img = cv2.imread(img_file)
+    rows, cols, colors = input_img.shape
+    gray = cv2.cvtColor(input_img, cv2.COLOR_BGR2GRAY)
     hypot = int(math.hypot(rows, cols))
     frame = np.zeros((hypot, hypot), np.uint8)
     frame[int((hypot - rows) * 0.5):int((hypot + rows) * 0.5), int((hypot - cols) * 0.5):int((hypot + cols) * 0.5)] = gray
@@ -39,7 +41,7 @@ def detect_face_rotate(img_file, out_dir = 'out'):
         rotated = cv2.warpAffine(frame, M, (hypot, hypot))
         #"""
         out_file = '%s/deg_%s.jpg' % (img_dir, deg)
-        cv2.imwrite(out_file, rotated)
+        #cv2.imwrite(out_file, rotated)
         #"""
 
         faces = face_cascade.detectMultiScale(rotated, 1.02, 5)
@@ -53,7 +55,7 @@ def detect_face_rotate(img_file, out_dir = 'out'):
             print 'face', (x,y,w,h), center_org
 
             resized = face_cand
-            if w < IMAGE_SIZE or w > IMAGE_SIZE * 2:
+            if w < IMAGE_SIZE:
                 print 'resizing..'
                 resized = cv2.resize(face_cand, (IMAGE_SIZE, IMAGE_SIZE))
 
@@ -110,7 +112,7 @@ def detect_face_rotate(img_file, out_dir = 'out'):
                     right_eye = (x,y,w,h)
         #"""
         out_file = '%s/eyes_%s_%s_%s.jpg' % (img_dir, result['face_id'], result['deg'], result['center_org'])
-        cv2.imwrite(out_file, img)
+        #cv2.imwrite(out_file, img)
         #"""
         if left_eye and right_eye:
             print '>>> valid eyes detect'
@@ -144,10 +146,10 @@ def detect_face_rotate(img_file, out_dir = 'out'):
     #"""
     for cand in filtered:
         out_file = '%s/cand_%s_face_%s_%s.jpg' % (img_dir, cand['face_id'], cand['deg'], cand['center_org'])
-        cv2.imwrite(out_file, cand['img'])
+        #cv2.imwrite(out_file, cand['img'])
         #res.append(out_file)
     #"""
-
+    finals = []
     #候補に対してさらに口検出チェック
     for item in filtered:
         img = np.copy(item["img_resized"])
@@ -164,17 +166,45 @@ def detect_face_rotate(img_file, out_dir = 'out'):
                 break
         #"""
         out_file = '%s/mouth_%s_face_%s_%s.jpg' % (img_dir, item['face_id'], item['deg'], item['center_org'])
-        cv2.imwrite(out_file, img)
+        #cv2.imwrite(out_file, img)
         #"""
         print item['face_id'], 'mouth found?', mouth_found
         if mouth_found:
+            finals.append(item)
             out_file1 = '%s/final_%s_%s_%s_%s.jpg' % (out_dir, fn, item['face_id'], item['deg'], item['center_org'])
             out_file2 = '%s/final_%s_%s_%s_%s.jpg' % (img_dir, fn, item['face_id'], item['deg'], item['center_org'])
-            cv2.imwrite(out_file1, item['img'])
-            cv2.imwrite(out_file2, item['img'])
+            #cv2.imwrite(out_file1, item['img'])
+            #cv2.imwrite(out_file2, item['img'])
             res.append(out_file1)
 
+    #最後にカラー画像として切り出し
+    for item in finals:
+        crop_color_face(item, input_img, out_dir, fn)
     return res
+
+def crop_color_face(item, img, out_dir, fn):
+    rows, cols, colors = img.shape
+    hypot = int(math.hypot(rows, cols))
+    frame = np.zeros((hypot, hypot, 3), np.uint8)
+    frame[int((hypot - rows) * 0.5):int((hypot + rows) * 0.5), int((hypot - cols) * 0.5):int((hypot + cols) * 0.5)] = img
+
+    deg = item['deg']
+    M = cv2.getRotationMatrix2D((hypot * 0.5, hypot * 0.5), -deg, 1.0)
+    rotated = cv2.warpAffine(frame, M, (hypot, hypot))
+
+    #"""
+    #out_file = '%s/7_color_deg_%s.jpg' % (img_dir, deg)
+    #cv2.imwrite(out_file, rotated)
+    #"""
+
+    x,y,w,h = item['frame']
+    face = rotated[y:y+h, x:x+w]
+    face = cv2.resize(face, (IMAGE_SIZE, IMAGE_SIZE))
+    #"""
+    out_file = '%s/%s_%s.jpg' % (out_dir, fn, item['face_id'])
+    cv2.imwrite(out_file, face)
+    #"""
+
 
 def eyes_vertical_diff(face):
     _,ly,_,lh = face["left_eye"]
@@ -420,6 +450,6 @@ if __name__ == "__main__":
     param = sys.argv
     #detect_all(param[1])
     #detect_face(param[1])
-    detect_face_rotate(param[1], 'out_rotated')
+    detect_face_rotate(param[1], param[2])
     #validate(param[1])
 

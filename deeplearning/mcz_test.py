@@ -9,7 +9,7 @@ import mcz_model
 
 def main(ckpt_path, csv = 'test.txt'):
     with tf.Graph().as_default():
-        images, labels, filename = mcz_input.load_data_for_test([csv], 100)
+        images, labels, filename = mcz_input.load_data_for_test([csv], 610)
         #print 'start', images, labels
         keep_prob = tf.placeholder("float")
 
