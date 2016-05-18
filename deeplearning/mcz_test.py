@@ -6,6 +6,7 @@ import tensorflow as tf
 
 import mcz_input
 import mcz_model
+import mcz_model_deep
 
 def main(ckpt_path, csv = 'test.txt'):
     with tf.Graph().as_default():
@@ -13,7 +14,7 @@ def main(ckpt_path, csv = 'test.txt'):
         #print 'start', images, labels
         keep_prob = tf.placeholder("float")
 
-        logits = mcz_model.inference(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
+        logits = mcz_model_deep.inference_deep(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
         acc = mcz_model.accuracy(logits, labels)
 
         saver = tf.train.Saver()
