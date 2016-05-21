@@ -9,7 +9,8 @@ import math
 IMAGE_SIZE = 112
 INPUT_SIZE = 96
 
-xml_dir = '/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades'
+xml_dir = os.path.dirname( os.path.abspath( __file__ ) ) + '/haarcascades'
+#xml_dir = '/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades'
 #xml_dir = 'haarcascades'
 face_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_frontalface_alt2.xml'))
 eye_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_eye.xml'))
@@ -142,7 +143,6 @@ def detect_face_rotate(img_file, out_dir = 'out'):
         candidates.append(result)
     filtered = filter(lambda n: n['duplicated'] == False, candidates)
 
-    res = []
     #"""
     for cand in filtered:
         out_file = '%s/cand_%s_face_%s_%s.jpg' % (img_dir, cand['face_id'], cand['deg'], cand['center_org'])
@@ -175,11 +175,12 @@ def detect_face_rotate(img_file, out_dir = 'out'):
             out_file2 = '%s/final_%s_%s_%s_%s.jpg' % (img_dir, fn, item['face_id'], item['deg'], item['center_org'])
             #cv2.imwrite(out_file1, item['img'])
             #cv2.imwrite(out_file2, item['img'])
-            res.append(out_file1)
 
     #最後にカラー画像として切り出し
+    res = []
     for item in finals:
-        crop_color_face(item, input_img, out_dir, fn)
+        out_file = crop_color_face(item, input_img, out_dir, fn)
+        res.append(out_file)
     return res
 
 def crop_color_face(item, img, out_dir, fn):
@@ -205,6 +206,7 @@ def crop_color_face(item, img, out_dir, fn):
     cv2.imwrite(out_file, face)
     #"""
 
+    return out_file
 
 def eyes_vertical_diff(face):
     _,ly,_,lh = face["left_eye"]
