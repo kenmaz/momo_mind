@@ -8,7 +8,6 @@ import tensorflow as tf #cv2より前にimportするとcv2.imreadになぜか失
 import os
 import mcz_input
 import mcz_model
-import mcz_model_deep
 
 def evaluation(imgpath, ckpt_path):
     tf.reset_default_graph()
@@ -22,7 +21,7 @@ def evaluation(imgpath, ckpt_path):
     image = tf.reshape(image, [-1, mcz_input.DST_INPUT_SIZE * mcz_input.DST_INPUT_SIZE * 3])
     print image
 
-    logits = mcz_model_deep.inference_deep(image, 1.0, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
+    logits = mcz_model.inference_deep(image, 1.0, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
 
     sess = tf.InteractiveSession()
     saver = tf.train.Saver()
