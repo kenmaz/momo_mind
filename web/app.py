@@ -8,9 +8,9 @@ from werkzeug import secure_filename
 import uuid
 import sys, os
 
-root_dir = os.path.dirname(os.path.abspath(__file__))
-face_detect_dir = root_dir + '/../face_detect'
-deeplearning_dir = root_dir + '/../deeplearning'
+web_dir = os.path.dirname(os.path.abspath(__file__))
+face_detect_dir = web_dir + '/../face_detect'
+deeplearning_dir = web_dir + '/../deeplearning'
 sys.path.append(face_detect_dir)
 sys.path.append(deeplearning_dir)
 import detect
@@ -32,7 +32,7 @@ def upload():
     print input_path
     f.save(input_path)
 
-    faces = detect.detect_face_rotate(input_path, 'static/tmp')
+    faces = detect.detect_face_rotate(input_path, web_dir + '/static/tmp')
     print faces
 
     #res = mcz_eval.main(faces, '../deeplearning/data/model.ckpt-15000')
