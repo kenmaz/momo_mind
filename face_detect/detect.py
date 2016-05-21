@@ -35,8 +35,7 @@ def detect_face_rotate(img_file, base_dir, out_dir = 'out'):
     results = []
     face_id_seed = 0
 
-    #5度ずつ元画像を回転し、顔の候補を全部取得
-    for deg in range(-50, 51, 5):
+    for deg in range(-50, 51, 10):
         print('deg:%s' % deg)
         M = cv2.getRotationMatrix2D((hypot * 0.5, hypot * 0.5), -deg, 1.0)
         rotated = cv2.warpAffine(frame, M, (hypot, hypot))
