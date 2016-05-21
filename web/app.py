@@ -7,8 +7,12 @@ from flask import request, jsonify
 from werkzeug import secure_filename
 import uuid
 import sys, os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../face_detect')
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../deeplearning')
+
+root_dir = os.path.dirname(os.path.abspath(__file__))
+face_detect_dir = root_dir + '/../face_detect'
+deeplearning_dir = root_dir + '/../deeplearning'
+sys.path.append(face_detect_dir)
+sys.path.append(deeplearning_dir)
 import detect
 import mcz_eval
 
@@ -32,7 +36,7 @@ def upload():
     print faces
 
     #res = mcz_eval.main(faces, '../deeplearning/data/model.ckpt-15000')
-    res = mcz_eval.execute(faces, '../deeplearning/data/model.ckpt-13000_85per_input56_conv3_fc2')
+    res = mcz_eval.execute(faces, deeplearning_dir + '/data/model.ckpt-13000_85per_input56_conv3_fc2')
 
     return jsonify({'results':res})
 
