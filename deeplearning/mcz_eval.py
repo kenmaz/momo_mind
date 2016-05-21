@@ -9,73 +9,60 @@ import os
 import mcz_input
 import mcz_model
 
-def main(filepaths, ckpt_path = None ):
-    if len(filepaths) == 0:
-        print "empty"
-        return []
-
-    img_files = []
-    test_image = []
-
-    for filepath in filepaths:
-        if not os.path.isfile(filepath):
-            print "not file:", filepath
-            continue
-        img_files.append(filepath)
-        img = cv2.imread(filepath)
-        img = cv2.resize(img, (28, 28))
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        test_image.append(img.flatten().astype(np.float32)/255.0)
-
+def evaluation(imgpath, ckpt_path):
     tf.reset_default_graph()
 
-    test_image = np.asarray(test_image)
-    pixel_size = mcz_input.DST_INPUT_SIZE * mcz_input.DST_INPUT_SIZE * 3
-    images_placeholder = tf.placeholder("float", shape=(None, pixel_size))
-    keep_prob = tf.placeholder("float")
+    jpeg = tf.read_file(imgpath)
+    image = tf.image.decode_jpeg(jpeg, channels=3)
+    image = tf.cast(image, tf.float32)
+    image.set_shape([mcz_input.IMAGE_SIZE, mcz_input.IMAGE_SIZE, 3])
+    image = tf.image.resize_images(image, mcz_input.DST_INPUT_SIZE, mcz_input.DST_INPUT_SIZE)
+    image = tf.image.per_image_whitening(image)
+    image = tf.reshape(image, [-1, mcz_input.DST_INPUT_SIZE * mcz_input.DST_INPUT_SIZE * 3])
+    print image
 
-    logits = mcz_model.inference(images_placeholder, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
+    logits = mcz_model.inference_deep(image, 1.0, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
 
     sess = tf.InteractiveSession()
+    saver = tf.train.Saver()
     sess.run(tf.initialize_all_variables())
-
     if ckpt_path:
-        saver = tf.train.Saver()
         saver.restore(sess, ckpt_path)
 
+    softmax = logits.eval()
+
+    result = softmax[0]
+    rates = [round(n * 100.0, 1) for n in result]
+    print rates
+
+    pred = np.argmax(result)
+    print mcz_input.MEMBER_NAMES[pred]
+
+    members = []
+    for idx, rate in enumerate(rates):
+        name = mcz_input.MEMBER_NAMES[idx]
+        members.append({
+            'name': name,
+            'rate': rate
+        })
+    rank = sorted(members, key=lambda x: x['rate'], reverse=True)
+
+    return rank
+
+def execute(imgpaths, ckpt_path):
     res = []
-
-    for i, image in enumerate(test_image):
-        print img_files[i]
-
-        feed_dict = {images_placeholder: [image], keep_prob: 1.0 }
-        softmax = logits.eval(feed_dict = feed_dict)
-
-        result = softmax[0]
-        rates = [round(n * 100.0, 1) for n in result]
-        print rates
-
-        pred = np.argmax(result)
-        print mcz_input.MEMBER_NAMES[pred]
-
-        members = []
-        for idx, rate in enumerate(rates):
-            name = mcz_input.MEMBER_NAMES[idx]
-            members.append({
-                'name': name,
-                'rate': rate
-            })
-        rank = sorted(members, key=lambda x: x['rate'], reverse=True)
-
+    for imgpath in imgpaths:
+        rank = evaluation(imgpath, ckpt_path)
         res.append({
-            'file': img_files[i],
+            'file': imgpath,
             'rank': rank
         })
-
-    sess.close()
     return res
 
 if __name__ == '__main__':
     ckpt_path = sys.argv[1]
-    imgfile = sys.argv[2]
-    main([imgfile], ckpt_path)
+    imgfile1 = sys.argv[2]
+    imgfile2 = sys.argv[3]
+    #main([imgfile], ckpt_path)
+    #main2(imgfile1, ckpt_path)
+    print execute([imgfile1,imgfile2], ckpt_path)

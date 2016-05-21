@@ -12,7 +12,6 @@ import os
 
 import mcz_input
 import mcz_model
-import mcz_model_deep
 
 LOGDIR = '/tmp/data.%s' % datetime.now().isoformat()
 print LOGDIR
@@ -31,7 +30,7 @@ def main(ckpt = None):
         keep_prob = tf.placeholder("float")
 
         images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = True)
-        logits = mcz_model_deep.inference_deep(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
+        logits = mcz_model.inference_deep(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
         loss_value = mcz_model.loss(logits, labels)
         train_op = mcz_model.training(loss_value, FLAGS.learning_rate)
         acc = mcz_model.accuracy(logits, labels)
@@ -64,9 +63,13 @@ def main(ckpt = None):
                 summary_str = sess.run(summary_op,feed_dict={keep_prob: 1.0})
                 summary_writer.add_summary(summary_str, step)
 
-            if step % 1000 == 0 or (step + 1) == FLAGS.max_steps:
+            if step % 1000 == 0 or (step + 1) == FLAGS.max_steps or loss_result == 0:
                 checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
                 saver.save(sess, checkpoint_path, global_step=step)
+
+            if loss_result == 0:
+                print('loss is zero')
+                break
 
 if __name__ == '__main__':
     ckpt = None
