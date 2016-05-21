@@ -17,10 +17,10 @@ eye_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_eye.xml')
 mouth_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_mcs_mouth.xml'))
 nose_cascade = cv2.CascadeClassifier(os.path.join(xml_dir, 'haarcascade_mcs_nose.xml'))
 
-def detect_face_rotate(img_file, out_dir = 'out'):
+def detect_face_rotate(img_file, base_dir, out_dir = 'out'):
     filename = os.path.basename(os.path.normpath(img_file))
     (fn, ext) = os.path.splitext(filename)
-    img_dir = '%s/%s' % (out_dir, fn)
+    img_dir = '%s/%s/%s' % (base_dir, out_dir, fn)
     """
     if not os.path.exists(img_dir):
         os.mkdir(img_dir)
@@ -452,6 +452,6 @@ if __name__ == "__main__":
     param = sys.argv
     #detect_all(param[1])
     #detect_face(param[1])
-    detect_face_rotate(param[1], param[2])
+    detect_face_rotate(param[1], '.', param[2])
     #validate(param[1])
 
