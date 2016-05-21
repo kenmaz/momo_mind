@@ -49,10 +49,10 @@ def evaluation(imgpath, ckpt_path):
 
     return rank
 
-def execute(imgpaths, ckpt_path):
+def execute(imgpaths, img_root_dir, ckpt_path):
     res = []
     for imgpath in imgpaths:
-        rank = evaluation(imgpath, ckpt_path)
+        rank = evaluation(img_root_dir + '/' + imgpath, ckpt_path)
         res.append({
             'file': imgpath,
             'rank': rank
@@ -65,4 +65,4 @@ if __name__ == '__main__':
     imgfile2 = sys.argv[3]
     #main([imgfile], ckpt_path)
     #main2(imgfile1, ckpt_path)
-    print execute([imgfile1,imgfile2], ckpt_path)
+    print execute([imgfile1,imgfile2], '.', ckpt_path)

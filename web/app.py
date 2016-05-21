@@ -32,11 +32,11 @@ def upload():
     print input_path
     f.save(input_path)
 
-    faces = detect.detect_face_rotate(input_path, web_dir + '/static/tmp')
+    faces = detect.detect_face_rotate(input_path, 'static/tmp')
     print faces
 
     #res = mcz_eval.main(faces, '../deeplearning/data/model.ckpt-15000')
-    res = mcz_eval.execute(faces, deeplearning_dir + '/data/model.ckpt-13000_85per_input56_conv3_fc2')
+    res = mcz_eval.execute(faces, web_dir, deeplearning_dir + '/data/model.ckpt-13000_85per_input56_conv3_fc2')
 
     return jsonify({'results':res})
 
