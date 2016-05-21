@@ -37,9 +37,9 @@ $(function() {
       })
       this.on("uploadprogress", function(file, progress, bytesSent) {
         console.log("uploadprogress");
-        $("#status").text('uploadprogress:'+progress);
+        $("#status").text('アップロード中:'+Math.floor(progress)+'%');
         if (progress == 100) {
-          $("#status").text('prosessing...');
+          $("#status").text('処理中...');
         }
       })
       this.on("sending", function(file) {
