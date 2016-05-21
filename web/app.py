@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import json
-from flask import Flask
+from flask import Flask, Response
 from flask import render_template
 from flask import request, jsonify
 from werkzeug import secure_filename
@@ -25,6 +25,12 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    """
+    f = open('sample.json')
+    json = f.read()
+    f.close()
+    return Response(response=json, status=200, mimetype="application/json")
+    """
     f = request.files['file']
     filename = secure_filename(f.filename)
     (fn, ext) = os.path.splitext(filename)

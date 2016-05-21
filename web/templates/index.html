@@ -1,27 +1,70 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 <head>
-  <link rel="stylesheet" href="{{ url_for('static', filename='mcz.css') }}"></style>
+  <title>momo-mind</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+    crossorigin="anonymous">
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+    integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
+    crossorigin="anonymous">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='mcz.css') }}">
 </head>
+
 <body>
-  <form action="{{ url_for('upload') }}" enctype='multipart/form-data' method='post'>
-    <input type="file" name="file"/>
-    <input type="submit">
-  </form>
-
-  <form action="{{ url_for('upload') }}" enctype='multipart/form-data' method='post' class="dropzone" id="upload_form">
-    <div class="fallback">
-      <input type="file" name="file"/>
-      <input type="submit">
+  <nav class="navbar navbar-inverse">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">ももクロ画像分類器</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
     </div>
-  </form>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>入力画像</h3>
+        <div id="stage" class="text-center">
+          <h3 id="drag_msg">ももクロメンバーが写っている画像を<br>ここにドラッグしてください</h3>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h3>解析結果</h3>
+        <div id="status" class="alert alert-info" role="alert"></div>
+        <div id="results" class="_container">
+        </div>
+      </div>
+    </div>
+  </div><!-- /.container -->
 
-  <div id="status"></div>
-
-  <table id="results">
-  </table>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous">
+  </script>
+  <script src="{{ url_for('static', filename='dropzone.js') }}"></script>
+  <script src="{{ url_for('static', filename='mcz.js') }}"></script>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-<script src="{{ url_for('static', filename='dropzone.js') }}"></script>
-<script src="{{ url_for('static', filename='mcz.js') }}"></script>
 </html>

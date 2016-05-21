@@ -1,0 +1,77 @@
+{
+    "results": [{
+        "file": "static/tmp/059568cf1f7511e6b2c314109fd45807_f12.jpg",
+        "rank": [{
+            "name_ascii": "kanako",
+            "name": "\u767e\u7530\u590f\u83dc\u5b50",
+            "rate": 100.0
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u9ad8\u57ce\u308c\u306b",
+            "rate": 0.0
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u7389\u4e95\u8a69\u7e54",
+            "rate": 0.0
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u4f50\u3005\u6728\u5f69\u590f",
+            "rate": 0.0
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u6709\u5b89\u674f\u679c",
+            "rate": 0.0
+        }
+        ]
+    }, {
+        "file": "static/tmp/059568cf1f7511e6b2c314109fd45807_f15.jpg",
+        "rank": [{
+            "name_ascii": "kanako",
+            "name": "\u7389\u4e95\u8a69\u7e54",
+            "rate": 83.1
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u767e\u7530\u590f\u83dc\u5b50",
+            "rate": 16.9
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u9ad8\u57ce\u308c\u306b",
+            "rate": 0.0
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u4f50\u3005\u6728\u5f69\u590f",
+            "rate": 0.0
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u6709\u5b89\u674f\u679c",
+            "rate": 0.0
+        }
+        ]
+    }, {
+        "file": "static/tmp/059568cf1f7511e6b2c314109fd45807_f22.jpg",
+        "rank": [{
+            "name_ascii": "kanako",
+            "name": "\u6709\u5b89\u674f\u679c",
+            "rate": 83.8
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u9ad8\u57ce\u308c\u306b",
+            "rate": 6.4
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u767e\u7530\u590f\u83dc\u5b50",
+            "rate": 4.6
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u4f50\u3005\u6728\u5f69\u590f",
+            "rate": 3.9
+        }, {
+            "name_ascii": "kanako",
+            "name": "\u7389\u4e95\u8a69\u7e54",
+            "rate": 1.2
+        }
+        ]
+    }
+    ]
+}
+

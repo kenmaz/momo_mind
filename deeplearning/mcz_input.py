@@ -13,11 +13,11 @@ NUM_CLASS = 5
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 500
 
 MEMBER_NAMES = {
-    0: "高城れに",
-    1: "百田夏菜子",
-    2: "玉井詩織",
-    3: "佐々木彩夏",
-    4: "有安杏果",
+    0: ["高城れに", "reni"],
+    1: ["百田夏菜子", "kanako"],
+    2: ["玉井詩織", "shiori"],
+    3: ["佐々木彩夏", "arin"],
+    4: ["有安杏果", "momoka"],
 }
 
 def load_data_for_test(csv, batch_size):

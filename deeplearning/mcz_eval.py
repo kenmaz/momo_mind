@@ -42,7 +42,8 @@ def evaluation(imgpath, ckpt_path):
     for idx, rate in enumerate(rates):
         name = mcz_input.MEMBER_NAMES[idx]
         members.append({
-            'name': name,
+            'name_ascii': name[1],
+            'name': name[0],
             'rate': rate
         })
     rank = sorted(members, key=lambda x: x['rate'], reverse=True)
