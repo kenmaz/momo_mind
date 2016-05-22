@@ -1,16 +1,20 @@
 $(function() {
+  $("button#clear").click(function() {
+    $("#stage")[0].dropzone.removeAllFiles();
+    $("#drag_msg").show();
+  });
   Dropzone.options.stage = {
     url: "/upload",
     parallelUploads: 1,
     maxThumbnailFilesize: 1,
     maxFilesize: 3,
     uploadMultiple: false,
-    thumbnailWidth: 400,
-    thumbnailHeight: 400,
+    thumbnailWidth: 300,
+    thumbnailHeight: 290,
     maxFiles: 1,
     previewTemplate:
       '<div class="dz-preview dz-file-preview">'+
-        '<div class="dz-details text-center"><img data-dz-thumbnail width="100%" style="margin-top: 10px"/></div>'+
+        '<div class="dz-details text-center"><img data-dz-thumbnail _width="100%" style="_margin-top: 10px"/></div>'+
         '<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>'+
         '<div class="dz-error-message"><span data-dz-errormessage></span></div>'+
       '</div>',
@@ -26,7 +30,6 @@ $(function() {
         }
         $("#drag_msg").hide();
         $("#status").show();
-        $("#stage").css("background-color", "white");
       });
       this.on("processing", function(file) {
         console.log("processing");
