@@ -28,6 +28,17 @@ def detect_face_rotate(img_file, base_dir, out_dir = 'out'):
 
     input_img = cv2.imread(img_file)
     rows, cols, colors = input_img.shape
+
+    print 'size', rows, cols
+    limit = 800
+    if rows > limit or cols > limit:
+        if rows > cols:
+            input_img = cv2.resize(input_img, (cols * limit / rows, limit))
+        else:
+            input_img = cv2.resize(input_img, (limit, rows * limit / cols))
+        rows, cols, colors = input_img.shape
+        print 'resized', rows, cols
+
     gray = cv2.cvtColor(input_img, cv2.COLOR_BGR2GRAY)
     hypot = int(math.hypot(rows, cols))
     frame = np.zeros((hypot, hypot), np.uint8)
@@ -36,12 +47,14 @@ def detect_face_rotate(img_file, base_dir, out_dir = 'out'):
     face_id_seed = 0
 
     #5度ずつ元画像を回転し、顔の候補を全部取得
-    for deg in range(-50, 51, 5):
+    #for deg in range(-50, 51, 5):
+    for deg in range(-10, 11, 5):
         print('deg:%s' % deg)
         M = cv2.getRotationMatrix2D((hypot * 0.5, hypot * 0.5), -deg, 1.0)
         rotated = cv2.warpAffine(frame, M, (hypot, hypot))
         #"""
         out_file = '%s/deg_%s.jpg' % (img_dir, deg)
+        #print out_file
         #cv2.imwrite(out_file, rotated)
         #"""
 
