@@ -3,7 +3,7 @@ $(function() {
     url: "/upload",
     parallelUploads: 1,
     maxThumbnailFilesize: 1,
-    maxFilesize: 1,
+    maxFilesize: 3,
     uploadMultiple: false,
     thumbnailWidth: 400,
     thumbnailHeight: 400,
