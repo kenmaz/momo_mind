@@ -9,7 +9,7 @@ require 'digest/md5'
 #  <keyword>,<url>,<url-md5_hash>
 #
 
-APIKEY = 'o1W2+VEhae2vI5OLW6pXpL5b2sd2+D7w9pTLOb0eyFk'
+APIKEY = '*** fixme ***'
 
 def get(keyword, skip = 0)
   url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources=%27image%27&Query=#{query(keyword)}&Market=%27ja-JP%27&Adult=%27Strict%27&ImageFilters=%27Size%3ALarge%27&$format=json&$skip=#{skip}"
