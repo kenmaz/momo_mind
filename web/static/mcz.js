@@ -1,5 +1,5 @@
 $(function() {
-  var myDropzone = new Dropzone($("#stage")[0],{
+  Dropzone.options.stage = {
     url: "/upload",
     parallelUploads: 1,
     maxThumbnailFilesize: 1,
@@ -85,5 +85,5 @@ $(function() {
         console.log("error");
       })
     }
-  });
+  };
 });
