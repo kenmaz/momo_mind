@@ -18,6 +18,12 @@
 #results .row .img {
   margin-right: 10px;
 }
+#results .row .names {
+  margin-right: 10px;
+}
+#results .row .buttons button {
+  margin-top: 10px;
+}
 table.rank {
   margin-left: 5px;
 }

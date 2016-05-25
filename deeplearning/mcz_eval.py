@@ -48,14 +48,15 @@ def evaluation(imgpath, ckpt_path):
         })
     rank = sorted(members, key=lambda x: x['rate'], reverse=True)
 
-    return rank
+    return (rank, pred)
 
 def execute(imgpaths, img_root_dir, ckpt_path):
     res = []
     for imgpath in imgpaths:
-        rank = evaluation(img_root_dir + '/' + imgpath, ckpt_path)
+        (rank, pred) = evaluation(img_root_dir + '/' + imgpath, ckpt_path)
         res.append({
             'file': imgpath,
+            'top_member_id': pred,
             'rank': rank
         })
     return res

@@ -62,24 +62,60 @@ $(function() {
         } else {
           $(results).each(function(idx, item) {
             console.log(item);
-            var row = $("<div class='row'>");
+            var id = "item-"+idx;
+            var html = ""+
+              "<div class='row' data-top-member-id='"+item['top_member_id']+"'>"+
+                "<div class='img pull-left'>"+
+                  "<img src='"+item['file']+"'/>"+
+                "</div>"+
+                "<div class='names pull-left'>"+
+                  "<table class='rank' id='"+id+"'>"+
+                  "</table>"+
+                "</div>"+
+                "<div class='buttons text-right'>"+
+                  "<small>この分析結果は...</small>"+
+                  "<div>"+
+                    "<button type='button' class='btn btn-default btn-sm good'>"+
+                      "<span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>"+
+                      "&nbsp;正解！"+
+                    "</button>"+
+                  "</div>"+
+                  "<div>"+
+                    "<button type='button' class='btn btn-default btn-sm bad'>"+
+                      "<span class='glyphicon glyphicon-thumbs-down' aria-hidden='true'></span>"+
+                      "&nbsp;不正解"+
+                    "</button>"+
+                  "</div>"+
+                "</div>"+
+                "<div class='clearfix'/>"+
+              "</div>";
+
+            var row = $(html);
             $("#results").append(row);
 
-            var col_img = $("<div class='img pull-left'>").append($("<img>").attr('src', item['file']));
-            row.append(col_img);
-
-            var col_names = $("<div class='names'>");
-            row.append(col_names);
-
-            var ul = $("<table class='rank'>");
-            col_names.append(ul);
-
+            var table = $("#"+id);
             $(item['rank']).each(function(j, member) {
-              var li = $("<tr><td><span class='"+member['name_ascii']+" name'>"+member["name"]+"</span></td><td>"+member["rate"]+"%</td></tr>");
-              ul.append(li);
+              var tr_html = ""+
+                "<tr>"+
+                  "<td>"+
+                    "<span class='"+member['name_ascii']+" name'>"+
+                      member["name"]+
+                    "</span>"+
+                  "</td>"+
+                  "<td>"+
+                    member["rate"]+"%"+
+                  "</td>"+
+                "</tr>";
+              table.append($(tr_html));
             });
-
-            row.append($("<div class='clearfix'>"));
+          });
+          $(".buttons button").click(function(ev){
+            var button = ev.target
+            var good = button.classList.contains("good");
+            var row = button.parentElement.parentElement.parentElement;
+            var topMemberId = row.dataset["topMemberId"];
+            var src = $(row).find(".img img").attr("src")
+            console.log([good, topMemberId, src]);
           });
         }
       })
