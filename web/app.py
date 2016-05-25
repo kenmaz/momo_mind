@@ -7,6 +7,7 @@ from flask import request, jsonify
 from werkzeug import secure_filename
 import uuid
 import sys, os
+import logs
 
 web_dir = os.path.dirname(os.path.abspath(__file__))
 face_detect_dir = web_dir + '/../face_detect'
@@ -44,6 +45,12 @@ def upload():
     res = mcz_eval.execute(faces, web_dir, deeplearning_dir + '/data/model.ckpt-13000_85per_input56_conv3_fc2')
 
     return jsonify({'results':res})
+
+@app.route('/report', methods=['POST'])
+def report():
+    print request.form
+    app.logger.info(",".join([request.form["src"],request.form["correct_member_id"]]))
+    return jsonify({'result':True})
 
 if __name__ == '__main__':
     #app.run()
