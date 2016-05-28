@@ -48,20 +48,30 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     norm2 = tf.nn.lrn(conv2, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, name='norm2')
     print norm2
 
-    h_pool2 = max_pool_2x2(norm2)
-    print h_pool2
+    pool2 = max_pool_2x2(norm2)
+    print pool2
 
-    with tf.name_scope('conv3') as scope:
+    with tf.variable_scope('conv3') as scope:
+        """
         W_conv3 = weight_variable([3, 3, 64, 128])
         b_conv3 = bias_variable([128])
         h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
         print h_conv3
+        """
+        kernel = _variable_with_weight_decay('weights', shape=[3, 3, 64, 128], stddev=1e-4, wd=0.0)
+        conv = conv2d(pool2, kernel)
+        biases = _variable_on_cpu('biases', [128], tf.constant_initializer(0.0))
+        bias = tf.nn.bias_add(conv, biases)
+        conv3 = tf.nn.relu(bias, name=scope.name)
+        _activation_summary(conv3)
+        print conv3
 
-    with tf.name_scope('pool3') as scope:
-        h_pool3 = max_pool_2x2(h_conv3)
-        print h_pool3
+    norm3 = tf.nn.lrn(conv3, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, name='norm3')
+    print norm3
 
     with tf.name_scope('conv4') as scope:
+    pool3 = max_pool_2x2(norm3)
+    print pool3
         W_conv4 = weight_variable([3, 3, 128, 256])
         b_conv4 = bias_variable([256])
         h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
