@@ -2,31 +2,47 @@
 # -*- coding: utf-8 -*-
 
 import tensorflow as tf
+import re
 
 def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
 
     x_image = tf.reshape(images_placeholder, [-1, image_size, image_size, 3])
     print x_image
 
-    with tf.name_scope('conv1') as scope:
+    with tf.variable_scope('conv1') as scope:
+        """
         W_conv1 = weight_variable([3, 3, 3, 32])
         b_conv1 = bias_variable([32])
         h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
         print h_conv1
+        """
+        W_conv1 = _variable_with_weight_decay('weights', shape=[3, 3, 3, 32],
+                stddev=1e-4, wd=0.0)
+        conv = conv2d(x_image, W_conv1)
+        b_conv1 = _variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
+        bias = tf.nn.bias_add(conv, b_conv1)
+        h_conv1 = tf.nn.relu(bias, name=scope.name)
+        _activation_summary(h_conv1)
 
-    with tf.name_scope('pool1') as scope:
-        h_pool1 = max_pool_2x2(h_conv1)
-        print h_pool1
+    h_pool1 = max_pool_2x2(h_conv1)
+    print h_pool1
+
+    norm1 = tf.nn.lrn(h_pool1, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75,
+                              name='norm1')
+    print norm1
 
     with tf.name_scope('conv2') as scope:
         W_conv2 = weight_variable([3, 3, 32, 64])
         b_conv2 = bias_variable([64])
-        h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
+        h_conv2 = tf.nn.relu(conv2d(norm1, W_conv2) + b_conv2)
         print h_conv2
 
-    with tf.name_scope('pool2') as scope:
-        h_pool2 = max_pool_2x2(h_conv2)
-        print h_pool2
+    norm2 = tf.nn.lrn(h_conv2, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, 
+            name='norm2')
+    print norm2
+
+    h_pool2 = max_pool_2x2(norm2)
+    print h_pool2
 
     with tf.name_scope('conv3') as scope:
         W_conv3 = weight_variable([3, 3, 64, 128])
@@ -73,6 +89,33 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
 def weight_variable(shape):
   initial = tf.truncated_normal(shape, stddev=0.1)
   return tf.Variable(initial)
+
+def _variable_on_cpu(name, shape, initializer):
+  with tf.device('/cpu:0'):
+    var = tf.get_variable(name, shape, initializer=initializer)
+  return var
+
+def _variable_with_weight_decay(name, shape, stddev, wd):
+  var = _variable_on_cpu(name, shape,
+                         tf.truncated_normal_initializer(stddev=stddev))
+  if wd is not None:
+    weight_decay = tf.mul(tf.nn.l2_loss(var), wd, name='weight_loss')
+    tf.add_to_collection('losses', weight_decay)
+  return var
+
+def _variable_on_cpu(name, shape, initializer):
+  with tf.device('/cpu:0'):
+    var = tf.get_variable(name, shape, initializer=initializer)
+  return var
+
+TOWER_NAME = 'tower'
+
+def _activation_summary(x):
+  # Remove 'tower_[0-9]/' from the name in case this is a multi-GPU training
+  # session. This helps the clarity of presentation on tensorboard.
+  tensor_name = re.sub('%s_[0-9]*/' % TOWER_NAME, '', x.op.name)
+  tf.histogram_summary(tensor_name + '/activations', x)
+  tf.scalar_summary(tensor_name + '/sparsity', tf.nn.zero_fraction(x))
 
 def bias_variable(shape):
   initial = tf.constant(0.1, shape=shape)
