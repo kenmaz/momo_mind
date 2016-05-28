@@ -93,24 +93,44 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     pool4 = max_pool_2x2(norm4)
     print pool4
 
-    with tf.name_scope('fc1') as scope:
+    with tf.variable_scope('fc1') as scope:
         w = image_size / pow(2,4)
+        pool4_flat = tf.reshape(pool4, [-1, w*w*256])
+        """
         W_fc1 = weight_variable([w*w*256, 1024])
         b_fc1 = bias_variable([1024])
-        h_pool4_flat = tf.reshape(h_pool4, [-1, w*w*256])
         print h_pool4_flat
         h_fc1 = tf.matmul(h_pool4_flat, W_fc1) + b_fc1
         h_fc1_drop = tf.nn.dropout(tf.nn.relu(h_fc1), keep_prob)
         print h_fc1_drop
+        """
+        weights = _variable_with_weight_decay('weights', shape=[w*w*256, 1024], stddev=0.04, wd=0.004)
+        biases = _variable_on_cpu('biases', [1024], tf.constant_initializer(0.0))
+        bias = tf.nn.bias_add(tf.matmul(pool4_flat, weights), biases)
+        fc1_drop = tf.nn.dropout(tf.nn.relu(bias), keep_prob)
+        _activation_summary(fc1_drop)
+        print fc1_drop
 
-    with tf.name_scope('fc2') as scope:
+    with tf.variable_scope('fc2') as scope:
+        weights = _variable_with_weight_decay('weights', shape=[1024, 256], stddev=0.04, wd=0.004)
+        biases = _variable_on_cpu('biases', [256], tf.constant_initializer(0.0))
+        bias = tf.nn.bias_add(tf.matmul(fc1_drop, weights), biases)
+        fc2_drop = tf.nn.dropout(tf.nn.relu(bias), keep_prob)
+        _activation_summary(fc2_drop)
+        print fc2_drop
+
+    with tf.variable_scope('fc3') as scope:
+        """
         W_fc2 = weight_variable([1024, num_classes])
         b_fc2 = bias_variable([num_classes])
         h_fc2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
         print h_fc2
-
-    with tf.name_scope('softmax') as scope:
-        y_conv=tf.nn.softmax(h_fc2)
+        """
+        weights = _variable_with_weight_decay('weights', shape=[256, num_classes], stddev=1/192.0, wd=0.0)
+        biases = _variable_on_cpu('biases', [num_classes], tf.constant_initializer(0.0))
+        bias = tf.nn.bias_add(tf.matmul(fc2_drop, weights), biases)
+        _activation_summary(bias)
+        y_conv=tf.nn.softmax(bias)
         print y_conv
 
     return y_conv

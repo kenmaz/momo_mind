@@ -23,7 +23,7 @@ flags.DEFINE_string('test', 'test2.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 flags.DEFINE_integer('max_steps', 100000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('batch_size', 120, 'Batch size Must divide evenly into the dataset sizes.')
-flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
+flags.DEFINE_float('learning_rate', 1e-3, 'Initial learning rate.')
 
 def main(ckpt = None):
     with tf.Graph().as_default():
