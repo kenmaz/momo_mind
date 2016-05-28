@@ -85,13 +85,23 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
         h_pool3 = max_pool_2x2(h_conv3)
         print h_pool3
 
+    with tf.name_scope('conv4') as scope:
+        W_conv4 = weight_variable([3, 3, 128, 256])
+        b_conv4 = bias_variable([256])
+        h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
+        print h_conv4
+
+    with tf.name_scope('pool4') as scope:
+        h_pool4 = max_pool_2x2(h_conv4)
+        print h_pool4
+
     with tf.name_scope('fc1') as scope:
-        w = image_size / pow(2,3)
-        W_fc1 = weight_variable([w*w*128, 1024])
+        w = image_size / pow(2,4)
+        W_fc1 = weight_variable([w*w*256, 1024])
         b_fc1 = bias_variable([1024])
-        h_pool3_flat = tf.reshape(h_pool3, [-1, w*w*128])
-        print h_pool3_flat
-        h_fc1 = tf.matmul(h_pool3_flat, W_fc1) + b_fc1
+        h_pool4_flat = tf.reshape(h_pool4, [-1, w*w*256])
+        print h_pool4_flat
+        h_fc1 = tf.matmul(h_pool4_flat, W_fc1) + b_fc1
         h_fc1_drop = tf.nn.dropout(tf.nn.relu(h_fc1), keep_prob)
         print h_fc1_drop
 
@@ -135,6 +145,11 @@ def loss(logits, labels):
 
 def training(loss, learning_rate):
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+
+    # Add histograms for trainable variables.
+    for var in tf.trainable_variables():
+          tf.histogram_summary(var.op.name, var)
+
     return train_step
 
 def accuracy(logits, labels):
