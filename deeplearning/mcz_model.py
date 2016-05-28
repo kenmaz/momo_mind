@@ -11,7 +11,7 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     with tf.name_scope('conv1') as scope:
         W_conv1 = weight_variable([3, 3, 3, 32])
         b_conv1 = bias_variable([32])
-        h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
+        h_conv1 = tf.nn.relu(tf.nn.bias_add(conv2d(x_image, W_conv1),b_conv1))
         print h_conv1
 
     with tf.name_scope('pool1') as scope:
@@ -21,7 +21,7 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     with tf.name_scope('conv2') as scope:
         W_conv2 = weight_variable([3, 3, 32, 64])
         b_conv2 = bias_variable([64])
-        h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
+        h_conv2 = tf.nn.relu(tf.nn.bias_add(conv2d(h_pool1, W_conv2), b_conv2))
         print h_conv2
 
     with tf.name_scope('pool2') as scope:
@@ -31,7 +31,7 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     with tf.name_scope('conv3') as scope:
         W_conv3 = weight_variable([3, 3, 64, 128])
         b_conv3 = bias_variable([128])
-        h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
+        h_conv3 = tf.nn.relu(tf.nn.bias_add(conv2d(h_pool2, W_conv3), b_conv3))
         print h_conv3
 
     with tf.name_scope('pool3') as scope:
@@ -41,7 +41,7 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     with tf.name_scope('conv4') as scope:
         W_conv4 = weight_variable([3, 3, 128, 256])
         b_conv4 = bias_variable([256])
-        h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
+        h_conv4 = tf.nn.relu(tf.nn.bias_add(conv2d(h_pool3, W_conv4), b_conv4))
         print h_conv4
 
     with tf.name_scope('pool4') as scope:
@@ -54,14 +54,14 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
         b_fc1 = bias_variable([1024])
         h_pool4_flat = tf.reshape(h_pool4, [-1, w*w*256])
         print h_pool4_flat
-        h_fc1 = tf.matmul(h_pool4_flat, W_fc1) + b_fc1
+        h_fc1 = tf.nn.bias_add(tf.matmul(h_pool4_flat, W_fc1), b_fc1)
         h_fc1_drop = tf.nn.dropout(tf.nn.relu(h_fc1), keep_prob)
         print h_fc1_drop
 
     with tf.name_scope('fc2') as scope:
         W_fc2 = weight_variable([1024, num_classes])
         b_fc2 = bias_variable([num_classes])
-        h_fc2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+        h_fc2 = tf.nn.bias_add(tf.matmul(h_fc1_drop, W_fc2), b_fc2)
         print h_fc2
 
     with tf.name_scope('softmax') as scope:
