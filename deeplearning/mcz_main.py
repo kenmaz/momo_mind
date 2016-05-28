@@ -11,7 +11,7 @@ import time
 import os
 
 import mcz_input
-import mcz_model
+import mcz_model_cifar as mcz_model
 
 LOGDIR = '/tmp/data.%s' % datetime.now().isoformat()
 print LOGDIR
@@ -27,13 +27,13 @@ flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 
 def main(ckpt = None):
     with tf.Graph().as_default():
-        keep_prob = tf.placeholder("float")
+        global_step = tf.Variable(0, trainable=False)
 
         images, labels, _ = mcz_input.load_data([FLAGS.train], FLAGS.batch_size, shuffle = True, distored = True)
-        logits = mcz_model.inference_deep(images, keep_prob, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS)
+        logits = mcz_model.inference(images, mcz_input.DST_INPUT_SIZE, mcz_input.NUM_CLASS, FLAGS.batch_size)
         loss_value = mcz_model.loss(logits, labels)
-        train_op = mcz_model.training(loss_value, FLAGS.learning_rate)
-        acc = mcz_model.accuracy(logits, labels)
+        train_op = mcz_model.train(loss_value, global_step, FLAGS.batch_size)
+        acc = mcz_model.accuracy(logits, labels, mcz_input.NUM_CLASS)
 
         saver = tf.train.Saver(max_to_keep = 0)
         sess = tf.Session()
@@ -47,11 +47,16 @@ def main(ckpt = None):
         summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph_def)
 
         for step in range(FLAGS.max_steps):
+            print('step %s' % step)
+
             start_time = time.time()
-            _, loss_result, acc_res = sess.run([train_op, loss_value, acc], feed_dict={keep_prob: 0.99})
+            _, loss_result, acc_res = sess.run([train_op, loss_value, acc])
             duration = time.time() - start_time
 
+            """
             if step % 10 == 0:
+            """
+            if True:
                 num_examples_per_step = FLAGS.batch_size
                 examples_per_sec = num_examples_per_step / duration
                 sec_per_batch = float(duration)
@@ -60,7 +65,7 @@ def main(ckpt = None):
                 print 'acc_res', acc_res
 
             if step % 100 == 0:
-                summary_str = sess.run(summary_op,feed_dict={keep_prob: 1.0})
+                summary_str = sess.run(summary_op)
                 summary_writer.add_summary(summary_str, step)
 
             if step % 1000 == 0 or (step + 1) == FLAGS.max_steps or loss_result == 0:

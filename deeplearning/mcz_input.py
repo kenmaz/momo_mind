@@ -30,7 +30,7 @@ def load_data(csv, batch_size, shuffle = True, distored = True):
     filename, label = tf.decode_csv(value, [["path"],[1]], field_delim=" ")
 
     label = tf.cast(label, tf.int64)
-    label = tf.one_hot(label, depth = NUM_CLASS, on_value = 1.0, off_value = 0.0, axis = -1)
+    #label = tf.one_hot(label, depth = NUM_CLASS, on_value = 1.0, off_value = 0.0, axis = -1)
 
     jpeg = tf.read_file(filename)
     image = tf.image.decode_jpeg(jpeg, channels=3)
@@ -87,6 +87,6 @@ def _generate_image_and_label_batch(image, label, filename, min_queue_examples,
     # Display the training images in the visualizer.
     tf.image_summary('image', images, max_images = 100)
 
-    labels = tf.reshape(label_batch, [batch_size, NUM_CLASS])
-    return images, labels, filename
+    #labels = tf.reshape(label_batch, [batch_size, NUM_CLASS])
+    return images, label_batch, filename
 
