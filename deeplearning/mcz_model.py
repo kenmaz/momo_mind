@@ -69,17 +69,29 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     norm3 = tf.nn.lrn(conv3, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, name='norm3')
     print norm3
 
-    with tf.name_scope('conv4') as scope:
     pool3 = max_pool_2x2(norm3)
     print pool3
+
+    with tf.variable_scope('conv4') as scope:
+        """
         W_conv4 = weight_variable([3, 3, 128, 256])
         b_conv4 = bias_variable([256])
         h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
         print h_conv4
+        """
+        kernel = _variable_with_weight_decay('weights', shape=[3, 3, 128, 256], stddev=1e-4, wd=0.0)
+        conv = conv2d(pool3, kernel)
+        biases = _variable_on_cpu('biases', [256], tf.constant_initializer(0.0))
+        bias = tf.nn.bias_add(conv, biases)
+        conv4 = tf.nn.relu(bias, name=scope.name)
+        _activation_summary(conv4)
+        print conv4
 
-    with tf.name_scope('pool4') as scope:
-        h_pool4 = max_pool_2x2(h_conv4)
-        print h_pool4
+    norm4 = tf.nn.lrn(conv4, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, name='norm4')
+    print norm4
+
+    pool4 = max_pool_2x2(norm4)
+    print pool4
 
     with tf.name_scope('fc1') as scope:
         w = image_size / pow(2,4)
