@@ -18,10 +18,13 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
         h_pool1 = max_pool_2x2(h_conv1)
         print h_pool1
 
+    norm1 = tf.nn.lrn(h_pool1, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, name='norm1')
+    print norm1
+
     with tf.name_scope('conv2') as scope:
         W_conv2 = weight_variable([3, 3, 32, 64])
         b_conv2 = bias_variable([64])
-        h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
+        h_conv2 = tf.nn.relu(conv2d(norm1, W_conv2) + b_conv2)
         print h_conv2
 
     with tf.name_scope('pool2') as scope:
