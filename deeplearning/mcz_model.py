@@ -44,8 +44,11 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
         _activation_summary(h_conv3)
         print h_conv3
 
+    norm3 = tf.nn.lrn(h_conv3, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, name='norm3')
+    print norm3
+
     with tf.name_scope('pool3') as scope:
-        h_pool3 = max_pool_2x2(h_conv3)
+        h_pool3 = max_pool_2x2(norm3)
         print h_pool3
 
     with tf.name_scope('fc1') as scope:
