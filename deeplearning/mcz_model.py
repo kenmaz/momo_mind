@@ -9,9 +9,9 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
     x_image = tf.reshape(images_placeholder, [-1, image_size, image_size, 3])
     print x_image
 
-    with tf.name_scope('conv1') as scope:
+    with tf.variable_scope('conv1') as scope:
         W_conv1 = weight_variable([3, 3, 3, 32])
-        b_conv1 = bias_variable([32])
+        b_conv1 = _variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
         h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
         _activation_summary(h_conv1)
         print h_conv1
@@ -85,6 +85,11 @@ def weight_variable(shape):
 def bias_variable(shape):
   initial = tf.constant(0.1, shape=shape)
   return tf.Variable(initial)
+
+def _variable_on_cpu(name, shape, initializer):
+    with tf.device('/cpu:0'):
+        var = tf.get_variable(name, shape, initializer=initializer)
+    return var
 
 TOWER_NAME = 'tower'
 
