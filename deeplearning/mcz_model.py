@@ -76,20 +76,18 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
         _activation_summary(h_fc1_drop)
         print h_fc1_drop
 
-    """
     with tf.name_scope('fc2') as scope:
-        W_fc2 = weight_variable([4096,1024])
-        b_fc2 = bias_variable([1024])
+        W_fc2 = weight_variable([1024,512])
+        b_fc2 = bias_variable([512])
         h_fc2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
         h_fc2_drop = tf.nn.dropout(tf.nn.relu(h_fc2), keep_prob)
         _activation_summary(h_fc2)
         print h_fc2
-    """
 
     with tf.name_scope('fc3') as scope:
-        W_fc3 = weight_variable([1024, num_classes])
+        W_fc3 = weight_variable([512, num_classes])
         b_fc3 = bias_variable([num_classes])
-        h_fc3 = tf.matmul(h_fc1_drop, W_fc3) + b_fc3
+        h_fc3 = tf.matmul(h_fc2_drop, W_fc3) + b_fc3
         _activation_summary(h_fc3)
         print h_fc3
 
