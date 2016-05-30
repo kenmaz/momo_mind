@@ -51,26 +51,50 @@ def inference_deep(images_placeholder, keep_prob, image_size, num_classes):
         h_pool3 = max_pool_2x2(norm3)
         print h_pool3
 
+    with tf.name_scope('conv4') as scope:
+        W_conv4 = weight_variable([3, 3, 128, 256])
+        b_conv4 = bias_variable([256])
+        h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
+        _activation_summary(h_conv4)
+        print h_conv4
+
+    norm4 = tf.nn.lrn(h_conv4, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75, name='norm4')
+    print norm4
+
+    with tf.name_scope('pool4') as scope:
+        h_pool4 = max_pool_2x2(norm4)
+        print h_pool4
+
     with tf.name_scope('fc1') as scope:
-        w = image_size / pow(2,3)
-        W_fc1 = weight_variable([w*w*128, 1024])
+        w = image_size / pow(2,4)
+        W_fc1 = weight_variable([w*w*256, 1024])
         b_fc1 = bias_variable([1024])
-        h_pool4_flat = tf.reshape(h_pool3, [-1, w*w*128])
-        print h_pool4_flat
-        h_fc1 = tf.matmul(h_pool4_flat, W_fc1) + b_fc1
+        h_pool_flat = tf.reshape(h_pool4, [-1, w*w*256])
+        print h_pool_flat
+        h_fc1 = tf.matmul(h_pool_flat, W_fc1) + b_fc1
         h_fc1_drop = tf.nn.dropout(tf.nn.relu(h_fc1), keep_prob)
         _activation_summary(h_fc1_drop)
         print h_fc1_drop
 
+    """
     with tf.name_scope('fc2') as scope:
-        W_fc2 = weight_variable([1024, num_classes])
-        b_fc2 = bias_variable([num_classes])
+        W_fc2 = weight_variable([4096,1024])
+        b_fc2 = bias_variable([1024])
         h_fc2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+        h_fc2_drop = tf.nn.dropout(tf.nn.relu(h_fc2), keep_prob)
         _activation_summary(h_fc2)
         print h_fc2
+    """
+
+    with tf.name_scope('fc3') as scope:
+        W_fc3 = weight_variable([1024, num_classes])
+        b_fc3 = bias_variable([num_classes])
+        h_fc3 = tf.matmul(h_fc1_drop, W_fc3) + b_fc3
+        _activation_summary(h_fc3)
+        print h_fc3
 
     with tf.name_scope('softmax') as scope:
-        y_conv=tf.nn.softmax(h_fc2)
+        y_conv=tf.nn.softmax(h_fc3)
         _activation_summary(y_conv)
         print y_conv
 
