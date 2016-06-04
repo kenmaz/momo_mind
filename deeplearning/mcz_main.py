@@ -22,7 +22,7 @@ flags.DEFINE_string('train', 'train2.txt', 'File name of train data')
 flags.DEFINE_string('test', 'test2.txt', 'File name of train data')
 flags.DEFINE_string('train_dir', LOGDIR, 'Directory to put the training data.')
 flags.DEFINE_integer('max_steps', 100000, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 120, 'Batch size Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('batch_size', 60, 'Batch size Must divide evenly into the dataset sizes.')
 flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
 
 def main(ckpt = None):
@@ -36,7 +36,10 @@ def main(ckpt = None):
         acc = mcz_model.accuracy(logits, labels)
 
         saver = tf.train.Saver(max_to_keep = 0)
-        sess = tf.Session()
+        # Assume that you have 12GB of GPU memory and want to allocate ~4GB:
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
+        sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+        #sess = tf.Session()
         sess.run(tf.initialize_all_variables())
         if ckpt:
             print 'restore ckpt', ckpt
@@ -67,9 +70,9 @@ def main(ckpt = None):
                 checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
                 saver.save(sess, checkpoint_path, global_step=step)
 
-            if loss_result == 0:
-                print('loss is zero')
-                break
+            #if loss_result == 0:
+            #    print('loss is zero')
+            #    break
 
 if __name__ == '__main__':
     ckpt = None
