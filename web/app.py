@@ -49,7 +49,7 @@ def upload():
 @app.route('/report', methods=['POST'])
 def report():
     print request.form
-    app.logger.info(",".join([request.form["src"],request.form["correct_member_id"]]))
+    app.logger.info(",".join(['report',request.form["src"],request.form["correct_member_id"]]))
     return jsonify({'result':True})
 
 if __name__ == '__main__':
