@@ -1,10 +1,5 @@
-airplane
-automobile
-bird
-cat
-deer
-dog
-frog
-horse
-ship
-truck
+reni
+kanako
+shiori
+arin
+momoka

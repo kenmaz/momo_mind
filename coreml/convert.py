@@ -1,4 +1,4 @@
-path = '/Users/kentaro.matsumae/Projects/momo_mind/keras/model.h5'
+path = '../keras/model.h5'
 
 import coremltools
 coreml_model = coremltools.converters.keras.convert(path,
@@ -6,5 +6,5 @@ coreml_model = coremltools.converters.keras.convert(path,
         image_input_names = 'image',
         class_labels = 'labels.txt')
 
-coreml_model.save('Cifar10.mlmodel')
+coreml_model.save('Momomind.mlmodel')
 

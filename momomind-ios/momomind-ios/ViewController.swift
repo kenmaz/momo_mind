@@ -12,7 +12,7 @@ import CoreML
 class ViewController: UIViewController, UIImagePickerControllerDelegate {
     
     //let inputSize:CGFloat = 299.0
-    let inputSize:CGFloat = 32.0
+    let inputSize:CGFloat = 112.0
     
     // Outlets to label and view
     @IBOutlet private weak var predictLabel: UILabel!
@@ -20,8 +20,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate {
     
     // some properties used to control the app and store appropriate values
     
-    let inceptionv3model = Inceptionv3()
-    let cifar10model = cifar10()
+    let model = Momomind()
     
     private var videoCapture: VideoCapture!
     
@@ -35,8 +34,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate {
             do {
                 let image: CVPixelBuffer = self.resize(imageBuffer: imageBuffer)!
                 
-                let prediction = try self.cifar10model.prediction(image: image)
-//                let prediction = try self.inceptionv3model.prediction(image: image)
+                let prediction = try self.model.prediction(image: image)
                 DispatchQueue.main.async {
                     self.predictLabel.text = prediction.classLabel
                 }
