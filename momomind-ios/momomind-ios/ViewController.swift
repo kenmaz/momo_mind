@@ -11,16 +11,14 @@ import CoreML
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate {
     
-    //let inputSize:CGFloat = 299.0
-    let inputSize:CGFloat = 112.0
-    
     // Outlets to label and view
     @IBOutlet private weak var predictLabel: UILabel!
     @IBOutlet private weak var previewView: UIView!
     
-    // some properties used to control the app and store appropriate values
-    
-    let model = Momomind()
+    //let model = Momomind()
+    //let inputSize:CGFloat = 112.0
+    let model = Inceptionv3()
+    let inputSize:CGFloat = 299.0
     
     private var videoCapture: VideoCapture!
     

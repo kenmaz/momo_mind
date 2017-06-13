@@ -11,6 +11,7 @@
 		5E9B27D01EF037F200D5569D /* AVCaptureDevice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B27CB1EF0378B00D5569D /* AVCaptureDevice+Extension.swift */; };
 		5E9B27D11EF037F200D5569D /* VideoCameraType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B27CC1EF0378B00D5569D /* VideoCameraType.swift */; };
 		5E9B27D21EF037F200D5569D /* VideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B27CD1EF0378B00D5569D /* VideoCapture.swift */; };
+		5E9B27D61EF03B7B00D5569D /* Inceptionv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B27D51EF03B1600D5569D /* Inceptionv3.mlmodel */; };
 		5ECCE2571EEF843500ABE7C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECCE2561EEF843500ABE7C8 /* AppDelegate.swift */; };
 		5ECCE25E1EEF843500ABE7C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5ECCE25D1EEF843500ABE7C8 /* Assets.xcassets */; };
 		5ECCE2611EEF843500ABE7C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5ECCE25F1EEF843500ABE7C8 /* LaunchScreen.storyboard */; };
@@ -23,6 +24,7 @@
 		5E9B27CC1EF0378B00D5569D /* VideoCameraType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCameraType.swift; sourceTree = "<group>"; };
 		5E9B27CD1EF0378B00D5569D /* VideoCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCapture.swift; sourceTree = "<group>"; };
 		5E9B27CE1EF037AC00D5569D /* Momomind.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = Momomind.mlmodel; path = ../../coreml/Momomind.mlmodel; sourceTree = "<group>"; };
+		5E9B27D51EF03B1600D5569D /* Inceptionv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Inceptionv3.mlmodel; sourceTree = "<group>"; };
 		5ECCE2531EEF843500ABE7C8 /* momomind-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "momomind-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ECCE2561EEF843500ABE7C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5ECCE25D1EEF843500ABE7C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				5ECCE2561EEF843500ABE7C8 /* AppDelegate.swift */,
 				5ECCE25D1EEF843500ABE7C8 /* Assets.xcassets */,
 				5E9B27CE1EF037AC00D5569D /* Momomind.mlmodel */,
+				5E9B27D51EF03B1600D5569D /* Inceptionv3.mlmodel */,
 				5ECCE25F1EEF843500ABE7C8 /* LaunchScreen.storyboard */,
 				5ECCE2791EEF851600ABE7C8 /* Main.storyboard */,
 				5E9B27CA1EF0378B00D5569D /* VideoCapture */,
@@ -161,6 +164,7 @@
 				5E9B27D11EF037F200D5569D /* VideoCameraType.swift in Sources */,
 				5E9B27D21EF037F200D5569D /* VideoCapture.swift in Sources */,
 				5E9B27CF1EF037AC00D5569D /* Momomind.mlmodel in Sources */,
+				5E9B27D61EF03B7B00D5569D /* Inceptionv3.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
