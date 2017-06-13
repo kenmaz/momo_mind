@@ -22,3 +22,5 @@ crawler/*.json
 **/pip-selfcheck.json
 **.pyc
 face_detect/bulk
+**/*.h5
+**/*.mlmodel
