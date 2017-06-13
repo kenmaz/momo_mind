@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import CoreML
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate {
+    
+    //let inputSize:CGFloat = 299.0
+    let inputSize:CGFloat = 32.0
     
     // Outlets to label and view
     @IBOutlet private weak var predictLabel: UILabel!
@@ -17,17 +21,22 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate {
     // some properties used to control the app and store appropriate values
     
     let inceptionv3model = Inceptionv3()
+    let cifar10model = cifar10()
+    
     private var videoCapture: VideoCapture!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let spec = VideoSpec(fps: 3, size: CGSize(width: 299, height: 299))
+        let spec = VideoSpec(fps: 3, size: CGSize(width: inputSize, height: inputSize))
         videoCapture = VideoCapture(cameraType: .back,
                                     preferredSpec: spec,
                                     previewContainer: previewView.layer)
         videoCapture.imageBufferHandler = {[unowned self] (imageBuffer, timestamp, outputBuffer) in
             do {
-                let prediction = try self.inceptionv3model.prediction(image: self.resize(imageBuffer: imageBuffer)!)
+                let image: CVPixelBuffer = self.resize(imageBuffer: imageBuffer)!
+                
+                let prediction = try self.cifar10model.prediction(image: image)
+//                let prediction = try self.inceptionv3model.prediction(image: image)
                 DispatchQueue.main.async {
                     self.predictLabel.text = prediction.classLabel
                 }
@@ -40,11 +49,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate {
     
     func resize(imageBuffer: CVPixelBuffer) -> CVPixelBuffer? {
         var ciImage = CIImage(cvPixelBuffer: imageBuffer, options: nil)
-        let transform = CGAffineTransform(scaleX: 299.0 / CGFloat(CVPixelBufferGetWidth(imageBuffer)), y: 299.0 / CGFloat(CVPixelBufferGetHeight(imageBuffer)))
-        ciImage = ciImage.applying(transform).cropping(to: CGRect(x: 0, y: 0, width: 299, height: 299))
+        let transform = CGAffineTransform(scaleX: inputSize / CGFloat(CVPixelBufferGetWidth(imageBuffer)), y: inputSize / CGFloat(CVPixelBufferGetHeight(imageBuffer)))
+        ciImage = ciImage.applying(transform).cropping(to: CGRect(x: 0, y: 0, width: inputSize, height: inputSize))
         let ciContext = CIContext()
         var resizeBuffer: CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, 299, 299, CVPixelBufferGetPixelFormatType(imageBuffer), nil, &resizeBuffer)
+        CVPixelBufferCreate(kCFAllocatorDefault, Int(inputSize), Int(inputSize), CVPixelBufferGetPixelFormatType(imageBuffer), nil, &resizeBuffer)
         ciContext.render(ciImage, to: resizeBuffer!)
         return resizeBuffer
     }

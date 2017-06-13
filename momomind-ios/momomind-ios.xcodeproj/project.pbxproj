@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5EC795BC1EEFA88600F7DC3B /* cifar10.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5EC795BB1EEFA88600F7DC3B /* cifar10.mlmodel */; };
 		5ECCE2571EEF843500ABE7C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECCE2561EEF843500ABE7C8 /* AppDelegate.swift */; };
 		5ECCE25E1EEF843500ABE7C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5ECCE25D1EEF843500ABE7C8 /* Assets.xcassets */; };
 		5ECCE2611EEF843500ABE7C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5ECCE25F1EEF843500ABE7C8 /* LaunchScreen.storyboard */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5EC795BB1EEFA88600F7DC3B /* cifar10.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = cifar10.mlmodel; path = ../../coreml/cifar10.mlmodel; sourceTree = "<group>"; };
 		5ECCE2531EEF843500ABE7C8 /* momomind-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "momomind-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ECCE2561EEF843500ABE7C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5ECCE25D1EEF843500ABE7C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 				5ECCE25D1EEF843500ABE7C8 /* Assets.xcassets */,
 				5ECCE25F1EEF843500ABE7C8 /* LaunchScreen.storyboard */,
 				5ECCE2681EEF845C00ABE7C8 /* Inceptionv3.mlmodel */,
+				5EC795BB1EEFA88600F7DC3B /* cifar10.mlmodel */,
 				5ECCE2791EEF851600ABE7C8 /* Main.storyboard */,
 				5ECCE2781EEF851600ABE7C8 /* ViewController.swift */,
 				5ECCE26A1EEF847700ABE7C8 /* VideoCapture */,
@@ -160,6 +163,7 @@
 				5ECCE26E1EEF847700ABE7C8 /* AVCaptureDevice+Extension.swift in Sources */,
 				5ECCE2691EEF845C00ABE7C8 /* Inceptionv3.mlmodel in Sources */,
 				5ECCE26F1EEF847700ABE7C8 /* VideoCameraType.swift in Sources */,
+				5EC795BC1EEFA88600F7DC3B /* cifar10.mlmodel in Sources */,
 				5ECCE2701EEF847700ABE7C8 /* VideoCapture.swift in Sources */,
 				5ECCE2571EEF843500ABE7C8 /* AppDelegate.swift in Sources */,
 			);
@@ -329,6 +333,7 @@
 				5ECCE2671EEF843500ABE7C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
