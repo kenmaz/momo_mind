@@ -1,0 +1,323 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5EEB7E621EF427F2005C8D81 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */; };
+		5EEB7E641EF427F2005C8D81 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E631EF427F2005C8D81 /* ViewController.swift */; };
+		5EEB7E671EF427F2005C8D81 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E651EF427F2005C8D81 /* Main.storyboard */; };
+		5EEB7E691EF427F2005C8D81 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E681EF427F2005C8D81 /* Assets.xcassets */; };
+		5EEB7E6C1EF427F2005C8D81 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E6A1EF427F2005C8D81 /* LaunchScreen.storyboard */; };
+		5EEB7E741EF43AD8005C8D81 /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5EEB7E5E1EF427F2005C8D81 /* momomind_ios11.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = momomind_ios11.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5EEB7E631EF427F2005C8D81 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5EEB7E661EF427F2005C8D81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5EEB7E681EF427F2005C8D81 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5EEB7E6B1EF427F2005C8D81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5EEB7E6D1EF427F2005C8D81 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5EEB7E5B1EF427F2005C8D81 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5EEB7E551EF427F2005C8D81 = {
+			isa = PBXGroup;
+			children = (
+				5EEB7E601EF427F2005C8D81 /* momomind_ios11 */,
+				5EEB7E5F1EF427F2005C8D81 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5EEB7E5F1EF427F2005C8D81 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5EEB7E5E1EF427F2005C8D81 /* momomind_ios11.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5EEB7E601EF427F2005C8D81 /* momomind_ios11 */ = {
+			isa = PBXGroup;
+			children = (
+				5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */,
+				5EEB7E631EF427F2005C8D81 /* ViewController.swift */,
+				5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */,
+				5EEB7E651EF427F2005C8D81 /* Main.storyboard */,
+				5EEB7E681EF427F2005C8D81 /* Assets.xcassets */,
+				5EEB7E6A1EF427F2005C8D81 /* LaunchScreen.storyboard */,
+				5EEB7E6D1EF427F2005C8D81 /* Info.plist */,
+			);
+			path = momomind_ios11;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5EEB7E5D1EF427F2005C8D81 /* momomind_ios11 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5EEB7E701EF427F2005C8D81 /* Build configuration list for PBXNativeTarget "momomind_ios11" */;
+			buildPhases = (
+				5EEB7E5A1EF427F2005C8D81 /* Sources */,
+				5EEB7E5B1EF427F2005C8D81 /* Frameworks */,
+				5EEB7E5C1EF427F2005C8D81 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = momomind_ios11;
+			productName = momomind_ios11;
+			productReference = 5EEB7E5E1EF427F2005C8D81 /* momomind_ios11.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5EEB7E561EF427F2005C8D81 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0900;
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = kenmaz.net;
+				TargetAttributes = {
+					5EEB7E5D1EF427F2005C8D81 = {
+						CreatedOnToolsVersion = 9.0;
+					};
+				};
+			};
+			buildConfigurationList = 5EEB7E591EF427F2005C8D81 /* Build configuration list for PBXProject "momomind_ios11" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5EEB7E551EF427F2005C8D81;
+			productRefGroup = 5EEB7E5F1EF427F2005C8D81 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5EEB7E5D1EF427F2005C8D81 /* momomind_ios11 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5EEB7E5C1EF427F2005C8D81 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EEB7E6C1EF427F2005C8D81 /* LaunchScreen.storyboard in Resources */,
+				5EEB7E691EF427F2005C8D81 /* Assets.xcassets in Resources */,
+				5EEB7E671EF427F2005C8D81 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5EEB7E5A1EF427F2005C8D81 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EEB7E741EF43AD8005C8D81 /* OverlayView.swift in Sources */,
+				5EEB7E641EF427F2005C8D81 /* ViewController.swift in Sources */,
+				5EEB7E621EF427F2005C8D81 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5EEB7E651EF427F2005C8D81 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5EEB7E661EF427F2005C8D81 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		5EEB7E6A1EF427F2005C8D81 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5EEB7E6B1EF427F2005C8D81 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5EEB7E6E1EF427F2005C8D81 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5EEB7E6F1EF427F2005C8D81 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5EEB7E711EF427F2005C8D81 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = D9UCJ653YY;
+				INFOPLIST_FILE = momomind_ios11/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.kenmaz.momomind-ios11";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5EEB7E721EF427F2005C8D81 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = D9UCJ653YY;
+				INFOPLIST_FILE = momomind_ios11/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.kenmaz.momomind-ios11";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5EEB7E591EF427F2005C8D81 /* Build configuration list for PBXProject "momomind_ios11" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5EEB7E6E1EF427F2005C8D81 /* Debug */,
+				5EEB7E6F1EF427F2005C8D81 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5EEB7E701EF427F2005C8D81 /* Build configuration list for PBXNativeTarget "momomind_ios11" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5EEB7E711EF427F2005C8D81 /* Debug */,
+				5EEB7E721EF427F2005C8D81 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5EEB7E561EF427F2005C8D81 /* Project object */;
+}
