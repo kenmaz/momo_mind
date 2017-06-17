@@ -22,7 +22,28 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CH9-0f-fcV" customClass="OverlayView" customModule="momomind_ios11" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="G8g-tu-qvE">
+                                        <rect key="frame" x="8" y="559" width="100" height="100"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="100" id="DIP-K2-HcK"/>
+                                            <constraint firstAttribute="width" constant="100" id="h0B-nu-9Pf"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K2E-be-xfy">
+                                        <rect key="frame" x="8" y="530" width="42" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="G8g-tu-qvE" firstAttribute="leading" secondItem="CH9-0f-fcV" secondAttribute="leading" constant="8" id="8bB-MP-6ll"/>
+                                    <constraint firstAttribute="bottom" secondItem="G8g-tu-qvE" secondAttribute="bottom" constant="8" id="GUW-pz-TlQ"/>
+                                    <constraint firstItem="K2E-be-xfy" firstAttribute="leading" secondItem="G8g-tu-qvE" secondAttribute="leading" id="bSn-kg-1IW"/>
+                                    <constraint firstItem="G8g-tu-qvE" firstAttribute="top" secondItem="K2E-be-xfy" secondAttribute="bottom" constant="8" id="tb0-Pp-Wy6"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -34,6 +55,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="facePreview" destination="G8g-tu-qvE" id="BLI-js-PP6"/>
+                        <outlet property="label" destination="K2E-be-xfy" id="ZUt-Gy-VlK"/>
                         <outlet property="overlayView" destination="CH9-0f-fcV" id="Lc2-F5-ugs"/>
                     </connections>
                 </viewController>
