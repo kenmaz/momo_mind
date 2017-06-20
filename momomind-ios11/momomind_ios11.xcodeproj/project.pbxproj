@@ -7,17 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5E86BB381EF58BE400E298D5 /* Momomind.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5E86BB371EF58BDD00E298D5 /* Momomind.mlmodel */; };
 		5EEB7E621EF427F2005C8D81 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */; };
 		5EEB7E641EF427F2005C8D81 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E631EF427F2005C8D81 /* ViewController.swift */; };
 		5EEB7E671EF427F2005C8D81 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E651EF427F2005C8D81 /* Main.storyboard */; };
 		5EEB7E691EF427F2005C8D81 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E681EF427F2005C8D81 /* Assets.xcassets */; };
 		5EEB7E6C1EF427F2005C8D81 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E6A1EF427F2005C8D81 /* LaunchScreen.storyboard */; };
 		5EEB7E741EF43AD8005C8D81 /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */; };
+		5EFAFCD51EF96DA20030DC5A /* Momomind.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAFCD41EF96DA20030DC5A /* Momomind.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5E86BB371EF58BDD00E298D5 /* Momomind.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Momomind.mlmodel; sourceTree = "<group>"; };
 		5EEB7E5E1EF427F2005C8D81 /* momomind_ios11.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = momomind_ios11.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5EEB7E631EF427F2005C8D81 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -26,6 +25,7 @@
 		5EEB7E6B1EF427F2005C8D81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5EEB7E6D1EF427F2005C8D81 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayView.swift; sourceTree = "<group>"; };
+		5EFAFCD41EF96DA20030DC5A /* Momomind.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = Momomind.mlmodel; path = ../../coreml/Momomind.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +65,7 @@
 				5EEB7E681EF427F2005C8D81 /* Assets.xcassets */,
 				5EEB7E6A1EF427F2005C8D81 /* LaunchScreen.storyboard */,
 				5EEB7E6D1EF427F2005C8D81 /* Info.plist */,
-				5E86BB371EF58BDD00E298D5 /* Momomind.mlmodel */,
+				5EFAFCD41EF96DA20030DC5A /* Momomind.mlmodel */,
 			);
 			path = momomind_ios11;
 			sourceTree = "<group>";
@@ -141,7 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E86BB381EF58BE400E298D5 /* Momomind.mlmodel in Sources */,
+				5EFAFCD51EF96DA20030DC5A /* Momomind.mlmodel in Sources */,
 				5EEB7E741EF43AD8005C8D81 /* OverlayView.swift in Sources */,
 				5EEB7E641EF427F2005C8D81 /* ViewController.swift in Sources */,
 				5EEB7E621EF427F2005C8D81 /* AppDelegate.swift in Sources */,

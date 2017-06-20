@@ -1,0 +1,15 @@
+../face_detect/out/train/arin/03735eb97833cfd5822ee391e8b03b77_12.jpg 3
+../face_detect/out/train/arin/03f10b31ce38141defe6c8ed989396aa_7.jpg 3
+../face_detect/out/train/arin/042f5c5094f1f8b7fadbb69ec0b20f47_0.jpg 3
+../face_detect/out/train/kanako/9_09cb6a3516e2377d200e7049d1ad52cb.jpg 1
+../face_detect/out/train/kanako/9d091503aa93744146f4180c7c31ff46_6.jpg 1
+../face_detect/out/train/kanako/9d2aebb7c7e20717d25e6563188ac4a2_2.jpg 1
+../face_detect/out/train/momoka/03f10b31ce38141defe6c8ed989396aa_8.jpg 4
+../face_detect/out/train/momoka/07471a6bb4d793779ac6c83cdb19f97a_1.jpg 4
+../face_detect/out/train/momoka/09a122e68b3fd5dbdacf5339483af02b_2.jpg 4
+../face_detect/out/train/reni/f8e3c5eac93c210be269378af0ab5d89_23.jpg 0
+../face_detect/out/train/reni/fb4839dc3e39bb63c86fd7e74e21951c_1.jpg 0
+../face_detect/out/train/reni/fc4548ce95e59fb19f879eb532ab1d8b_1.jpg 0
+../face_detect/out/train/shiori/e8e72de9d2ca42e3fabc22cb91f2d5d1_1.jpg 2
+../face_detect/out/train/shiori/e960f6fe86ac83bdcb4a22a5f3b97cea_14.jpg 2
+../face_detect/out/train/shiori/ea31d913779691cf81745ea228bd099f_6.jpg 2

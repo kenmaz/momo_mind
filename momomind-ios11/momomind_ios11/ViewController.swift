@@ -20,6 +20,9 @@ class ViewController: UIViewController {
     var device: AVCaptureDevice?
     var previewLayer: AVCaptureVideoPreviewLayer?
     var connection : AVCaptureConnection?
+    let inputSize: Float = 112
+    
+    let momomind = Momomind()
     
     lazy var faceRequest: VNDetectFaceRectanglesRequest = {
         return VNDetectFaceRectanglesRequest(completionHandler: self.vnRequestHandler)
@@ -31,7 +34,7 @@ class ViewController: UIViewController {
     
     lazy var classificationRequest: VNCoreMLRequest = {
         do {
-            let model = try VNCoreMLModel(for: Momomind().model)
+            let model = try VNCoreMLModel(for: self.momomind.model)
             return VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
         } catch {
             fatalError("can't load Vision ML model: \(error)")
@@ -196,12 +199,15 @@ extension ViewController {
     }
     
     fileprivate func renderPreview(box:CGRect, image: CIImage, type: OSType) {
-        let inputSize: CGFloat = 112
+        let size = CGFloat(inputSize)
+        
         let transform = CGAffineTransform(
-            scaleX: inputSize / box.size.width,
-            y: inputSize / box.size.height)
+            scaleX: size / box.size.width,
+            y: size / box.size.height)
         let faceImage = image.cropping(to: box).applying(transform)
         
+        //FIXME
+        //predicate_using_vision_api(image: faceImage)
         predicate(image: faceImage)
         
         let ctx = CIContext()
@@ -215,13 +221,60 @@ extension ViewController {
         }
     }
     
-    fileprivate func predicate(image: CIImage) {
+    fileprivate func predicate_using_vision_api(image: CIImage) {
         let handler = VNImageRequestHandler(ciImage: image)
         do {
             try handler.perform([classificationRequest])
         } catch {
             print(error)
         }
+    }
+    
+    fileprivate func predicate(image: CIImage) {
+        guard let input = mlMultiArray(from: image) else {
+            return
+        }
+        do {
+            let res = try momomind.prediction(image: input)
+            print(res.classLabel)
+            DispatchQueue.main.async {
+                self.label.text = res.classLabel
+            }
+        } catch {
+            print(error)
+        }
+        
+    }
+    
+    private func mlMultiArray(from image: CIImage) -> MLMultiArray? {
+        let context = CIContext()
+        let cgImage = context.createCGImage(image, from: image.extent)
+        
+        guard let data = cgImage?.dataProvider?.data else {
+            assertionFailure()
+            return nil
+        }
+        let length = CFDataGetLength(data)
+        var rawData = [UInt8](repeating: 0, count: length)
+        CFDataGetBytes(data, CFRange(location: 0, length: length), &rawData)
+        
+        let size = NSNumber(value: inputSize)
+        
+        guard let input = try? MLMultiArray(shape: [3, size, size], dataType: MLMultiArrayDataType.float32) else {
+            assertionFailure()
+            return nil
+        }
+        var index = 0
+        for (i, data) in rawData.enumerated() {
+            if i % 4 == 3 {
+                continue //alpha
+            } else {
+                let norm = Float(data) / 255.0
+                input[index] = NSNumber(value: norm)
+                index += 1
+            }
+        }
+        return input
     }
 }
 
