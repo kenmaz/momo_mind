@@ -41,21 +41,14 @@ class ViewController: UIViewController {
         }
     }()
     
-    func handleClassification(request: VNRequest, error: Error?) {
-        guard let observations = request.results as? [VNClassificationObservation]
-            else { fatalError("unexpected result type from VNCoreMLRequest") }
-        guard let best = observations.first
-            else { fatalError("can't get best result") }
-        
-        DispatchQueue.main.async {
-            let res = "Classification: \"\(best.identifier)\" Confidence: \(best.confidence)"
-            print(res)
-            self.label.text = res
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        guard TARGET_OS_SIMULATOR != 1 else {
+            print("simulator!!!")
+            return
+        }
+        
         setupVideoCapture()
     }
     
@@ -82,9 +75,32 @@ class ViewController: UIViewController {
         super.viewDidLayoutSubviews()
         previewLayer?.frame = view.layer.bounds
     }
+    
+    @IBAction func infoButtonDidTap(_ sender: Any) {
+        eval()
+    }
 }
 
 extension ViewController {
+    
+    func handleClassification(request: VNRequest, error: Error?) {
+        guard let observations = request.results as? [VNClassificationObservation]
+            else { fatalError("unexpected result type from VNCoreMLRequest") }
+        guard let best = observations.first
+            else { fatalError("can't get best result") }
+        
+        print("-----")
+        print(request)
+        for ob in observations {
+            print(ob.identifier, ob.confidence)
+        }
+        
+//        DispatchQueue.main.async {
+//            let res = "Classification: \"\(best.identifier)\" Confidence: \(best.confidence)"
+//            print(res)
+//            self.label.text = res
+//        }
+    }
     
     func setupVideoCapture() {
         let device = AVCaptureDevice.default(for: AVMediaType.video)!
@@ -207,8 +223,8 @@ extension ViewController {
         let faceImage = image.cropping(to: box).applying(transform)
         
         //FIXME
-        //predicate_using_vision_api(image: faceImage)
-        predicate(image: faceImage)
+        predicate_using_vision_api(image: faceImage)
+        //predicate(image: faceImage)
         
         let ctx = CIContext()
         guard let cgImage = ctx.createCGImage(faceImage, from: faceImage.extent) else {
@@ -231,24 +247,30 @@ extension ViewController {
     }
     
     fileprivate func predicate(image: CIImage) {
-        guard let input = mlMultiArray(from: image) else {
-            return
-        }
-        do {
-            let res = try momomind.prediction(image: input)
-            print(res.classLabel)
-            DispatchQueue.main.async {
-                self.label.text = res.classLabel
-            }
-        } catch {
-            print(error)
-        }
-        
-    }
-    
-    private func mlMultiArray(from image: CIImage) -> MLMultiArray? {
         let context = CIContext()
         let cgImage = context.createCGImage(image, from: image.extent)
+        if let label = classifiy(cgImage: cgImage) {
+            DispatchQueue.main.async {
+                self.label.text = label
+            }
+        }
+    }
+    
+    fileprivate func classifiy(cgImage: CGImage?) -> String? {
+        guard let input = mlMultiArray(from: cgImage) else {
+            return nil
+        }
+        do {
+            return nil
+//            let res = try momomind.prediction(image: input)
+//            return res.classLabel
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    private func mlMultiArray(from cgImage: CGImage?) -> MLMultiArray? {
         
         guard let data = cgImage?.dataProvider?.data else {
             assertionFailure()
@@ -265,15 +287,31 @@ extension ViewController {
             return nil
         }
         var index = 0
-        for (i, data) in rawData.enumerated() {
-            if i % 4 == 3 {
-                continue //alpha
-            } else {
-                let norm = Float(data) / 255.0
-                input[index] = NSNumber(value: norm)
-                index += 1
-            }
+        var outIdx = 0
+        
+        let len = rawData.count
+        while index < len {
+            let r = rawData[index + 0]
+            let g = rawData[index + 1]
+            let b = rawData[index + 2]
+            let a = rawData[index + 3]
+            let m:Float = 255.0
+            input[outIdx + 0] = NSNumber(value: Float(r) / m)
+            input[outIdx + 1] = NSNumber(value: Float(g) / m)
+            input[outIdx + 2] = NSNumber(value: Float(b) / m)
+            index += 4
+            outIdx += 3
         }
+//
+//        for (i, data) in rawData.enumerated() {
+//            if i % 4 == 3 {
+//                continue //alpha
+//            } else {
+//                let norm = Float(data) / 255.0
+//                input[index] = NSNumber(value: norm)
+//                index += 1
+//            }
+//        }
         return input
     }
 }
@@ -324,4 +362,82 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             }
         }
     }
+}
+
+
+//eval
+
+extension ViewController {
+    
+    func eval() {
+        let names = [
+//            "reni",
+//            "kanako",
+//            "shiori",
+//            "arin",
+            "momoka"
+        ]
+        for memberName in names {
+            print(memberName)
+            let jpgs = Bundle.main.paths(forResourcesOfType: "jpg", inDirectory: "out/train/\(memberName)")
+            for path in jpgs {
+                let image = UIImage(contentsOfFile: path)?.cgImage
+                let input = CIImage(cgImage: image!)
+                predicate_using_vision_api(image: input)
+            }
+        }
+    }
+    
+    func ___eval() {
+        let path = Bundle.main.path(forResource: "0_c110ce436ca73d6c70fb2af646563c60", ofType: "jpg", inDirectory: "out/train/arin")!
+        let image = UIImage(contentsOfFile: path)?.cgImage
+        let input = CIImage(cgImage: image!)
+        predicate_using_vision_api(image: input)
+    }
+    
+    func __eval() {
+        let path = Bundle.main.path(forResource: "0_c110ce436ca73d6c70fb2af646563c60", ofType: "jpg", inDirectory: "out/train/arin")!
+        //let path = Bundle.main.path(forResource: "test", ofType: "png", inDirectory: "out/train/arin")!
+        let image = UIImage(contentsOfFile: path)
+        let label = classifiy(cgImage: image?.cgImage)!
+        print(label)
+    }
+    
+    func _eval() {
+        print("processing..")
+        DispatchQueue.global().async {
+            self.evalInBg()
+            print("done")
+        }
+    }
+    
+    func evalInBg() {
+        let names = [
+            "reni",
+            "kanako",
+            "shiori",
+            "arin",
+            "momoka"
+        ]
+        for memberName in names {
+            print(memberName)
+            let jpgs = Bundle.main.paths(forResourcesOfType: "jpg", inDirectory: "out/train/\(memberName)")
+            var errorCnt:Float = 0
+            var successCnt:Float = 0
+            let total = Float(jpgs.count)
+            
+            for path in jpgs {
+                let image = UIImage(contentsOfFile: path)
+                if let label = classifiy(cgImage: image?.cgImage) {
+                    if memberName == label {
+                        successCnt += 1
+                    }
+                } else {
+                    errorCnt += 1
+                }
+            }
+            print("result success:\(successCnt) / \(total) ( \(successCnt / total) %),  err:\(errorCnt)")
+        }
+    }
+    
 }

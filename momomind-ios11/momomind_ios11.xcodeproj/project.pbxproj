@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E06C7E61EFDFCEA007F48BE /* out in Resources */ = {isa = PBXBuildFile; fileRef = 5E06C7E51EFDFCEA007F48BE /* out */; };
 		5EEB7E621EF427F2005C8D81 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */; };
 		5EEB7E641EF427F2005C8D81 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E631EF427F2005C8D81 /* ViewController.swift */; };
 		5EEB7E671EF427F2005C8D81 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E651EF427F2005C8D81 /* Main.storyboard */; };
@@ -17,9 +18,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5E06C7E51EFDFCEA007F48BE /* out */ = {isa = PBXFileReference; lastKnownFileType = folder; path = out; sourceTree = "<group>"; };
 		5EEB7E5E1EF427F2005C8D81 /* momomind_ios11.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = momomind_ios11.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5EEB7E631EF427F2005C8D81 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5EEB7E631EF427F2005C8D81 /* ViewController.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5EEB7E661EF427F2005C8D81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5EEB7E681EF427F2005C8D81 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5EEB7E6B1EF427F2005C8D81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 		5EEB7E601EF427F2005C8D81 /* momomind_ios11 */ = {
 			isa = PBXGroup;
 			children = (
+				5E06C7E51EFDFCEA007F48BE /* out */,
 				5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */,
 				5EEB7E631EF427F2005C8D81 /* ViewController.swift */,
 				5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */,
@@ -131,6 +134,7 @@
 				5EEB7E6C1EF427F2005C8D81 /* LaunchScreen.storyboard in Resources */,
 				5EEB7E691EF427F2005C8D81 /* Assets.xcassets in Resources */,
 				5EEB7E671EF427F2005C8D81 /* Main.storyboard in Resources */,
+				5E06C7E61EFDFCEA007F48BE /* out in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

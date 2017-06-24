@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.17" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.19" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.16"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -36,12 +36,20 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NZh-jD-Lta">
+                                        <rect key="frame" x="335" y="18" width="22" height="22"/>
+                                        <connections>
+                                            <action selector="infoButtonDidTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="p2U-HB-Dz0"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="G8g-tu-qvE" firstAttribute="leading" secondItem="CH9-0f-fcV" secondAttribute="leading" constant="8" id="8bB-MP-6ll"/>
                                     <constraint firstAttribute="bottom" secondItem="G8g-tu-qvE" secondAttribute="bottom" constant="8" id="GUW-pz-TlQ"/>
+                                    <constraint firstItem="NZh-jD-Lta" firstAttribute="top" secondItem="CH9-0f-fcV" secondAttribute="top" constant="18" id="W2a-vd-1Ao"/>
                                     <constraint firstItem="K2E-be-xfy" firstAttribute="leading" secondItem="G8g-tu-qvE" secondAttribute="leading" id="bSn-kg-1IW"/>
+                                    <constraint firstAttribute="trailing" secondItem="NZh-jD-Lta" secondAttribute="trailing" constant="18" id="srR-6Z-Mp1"/>
                                     <constraint firstItem="G8g-tu-qvE" firstAttribute="top" secondItem="K2E-be-xfy" secondAttribute="bottom" constant="8" id="tb0-Pp-Wy6"/>
                                 </constraints>
                             </view>
