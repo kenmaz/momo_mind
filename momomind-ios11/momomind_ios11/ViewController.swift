@@ -202,7 +202,7 @@ extension ViewController {
         guard
             let req = request as? VNDetectFaceRectanglesRequest,
             let faces = req.results as? [VNFaceObservation],
-            let firstFace = faces.first else {
+            let firstFace = faces.sorted(by: { (a, b) -> Bool in distanceToCenter(firstFace: a) < distanceToCenter(firstFace: b) }).first else {
             return
         }
         guard let image = inputImage else {
@@ -211,6 +211,14 @@ extension ViewController {
         
         drawFaceRectOverlay(image: image, faces: [firstFace])
         processForPredict(image: image, faces: [firstFace])
+    }
+    private func distanceToCenter(firstFace: VNFaceObservation) -> CGFloat {
+        let x = firstFace.boundingBox.origin.x + firstFace.boundingBox.size.width / 2
+        let y = firstFace.boundingBox.origin.y + firstFace.boundingBox.size.height / 2
+        let pos = CGPoint(x: x, y: y)
+        let viewPos = CGPoint(x: 0.5, y: 0.5)
+        let distance = sqrt(pow(pos.x - viewPos.x, 2) + pow(pos.y - viewPos.y, 2))
+        return distance
     }
     
     //device = 1920,1080 (imagesize/videoDim)
