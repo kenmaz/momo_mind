@@ -84,7 +84,7 @@ class ViewController: UIViewController {
     }
 }
 
-// setup video
+//MARK: - setup video
 
 extension ViewController {
     
@@ -148,7 +148,7 @@ extension ViewController {
     }
 }
 
-// Video Capture
+//MARK: - Video Capture
 
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -177,7 +177,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
-//Face detection
+//MARK: - Face detection
 
 extension ViewController {
     
@@ -264,7 +264,7 @@ extension ViewController {
     }
 }
 
-// Predicate
+//MARK: - Predicate
 
 extension ViewController {
     
