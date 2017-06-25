@@ -1,13 +1,4 @@
-'''Train a simple deep CNN on the CIFAR10 small images dataset.
-
-GPU run command with Theano backend (with TensorFlow, the GPU is automatically used):
-    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python cifar10_cnn.py
-
-It gets down to 0.65 test logloss in 25 epochs, and down to 0.55 after 50 epochs.
-(it's still underfitting at that point, though).
-'''
 from __future__ import print_function
-from keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
@@ -19,16 +10,11 @@ import sys
 batch_size = 32
 nb_classes = 5
 nb_epoch = 200
-#nb_epoch = 1
 data_augmentation = True
 
-# input image dimensions
 img_rows, img_cols = 112, 112
-# The CIFAR10 images are RGB.
 img_channels = 3
 
-# The data, shuffled and split between train and test sets:
-#(X_train, y_train), (X_test, y_test) = cifar10.load_data()
 (X_train, y_train)= mcz_input.read_data('../deeplearning/train.txt')
 (X_test, y_test)= mcz_input.read_data('../deeplearning/test.txt')
 
@@ -37,7 +23,6 @@ print('y_train shape:', y_train.shape, y_train[0][0])
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
 
-# Convert class vectors to binary class matrices.
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
@@ -65,7 +50,6 @@ model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
-# Let's train the model using RMSprop
 model.compile(loss='categorical_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
