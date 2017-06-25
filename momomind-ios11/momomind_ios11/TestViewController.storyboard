@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.19" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nHZ-ho-JF9">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.16"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Test View Controller-->
+        <scene sceneID="lTe-am-W02">
+            <objects>
+                <viewController id="nHZ-ho-JF9" customClass="TestViewController" customModule="momomind_ios11" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nuB-5a-sx7"/>
+                        <viewControllerLayoutGuide type="bottom" id="49h-ff-2vf"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="cDf-24-KlI">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hWD-kY-Jir">
+                                <rect key="frame" x="16" y="28" width="343" height="68"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="brH-S6-tXr">
+                                        <rect key="frame" x="156" y="0.0" width="31" height="30"/>
+                                        <state key="normal" title="train"/>
+                                        <connections>
+                                            <action selector="trainButtonDidTap:" destination="nHZ-ho-JF9" eventType="touchUpInside" id="9xx-vo-Z3m"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uvF-1x-lRr">
+                                        <rect key="frame" x="156.5" y="38" width="30" height="30"/>
+                                        <state key="normal" title="test"/>
+                                        <connections>
+                                            <action selector="testButtonDidTap:" destination="nHZ-ho-JF9" eventType="touchUpInside" id="Fv4-jh-Rzo"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="hWD-kY-Jir" firstAttribute="top" secondItem="nuB-5a-sx7" secondAttribute="bottom" constant="8" symbolic="YES" id="7ue-Fs-dwW"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="hWD-kY-Jir" secondAttribute="trailing" id="Cd3-i7-eRR"/>
+                            <constraint firstItem="hWD-kY-Jir" firstAttribute="leading" secondItem="cDf-24-KlI" secondAttribute="leadingMargin" id="rhM-eD-wzN"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ELj-vR-Use" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-439" y="152"/>
+        </scene>
+    </scenes>
+</document>
