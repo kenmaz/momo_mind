@@ -14,7 +14,23 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var overlayView: OverlayView!
     @IBOutlet weak var facePreview: UIImageView!
-    @IBOutlet weak var label: UILabel!
+    
+    @IBOutlet var progressViews: [UIProgressView]! {
+        didSet {
+            progressViews.forEach {
+                $0.transform = CGAffineTransform(scaleX: 1, y: 3)
+                $0.progress = 0
+            }
+        }
+    }
+    
+    @IBOutlet var probabilityLabels: [UILabel]! {
+        didSet {
+            probabilityLabels.forEach {
+                $0.text = "-%"
+            }
+        }
+    }
     
     let session = AVCaptureSession()
     var device: AVCaptureDevice?
@@ -32,14 +48,14 @@ class ViewController: UIViewController {
     var overlayViewSize: CGSize?
     var videoDims: CMVideoDimensions?
     
-    lazy var classificationRequest: VNCoreMLRequest = {
+    func classificationRequest() -> VNCoreMLRequest {
         do {
             let model = try VNCoreMLModel(for: self.momomind.model)
             return VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
         } catch {
             fatalError("can't load Vision ML model: \(error)")
         }
-    }()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,17 +105,34 @@ extension ViewController {
         guard let best = observations.first
             else { fatalError("can't get best result") }
         
-        print("-----")
-        print(request)
-        for ob in observations {
-            print(ob.identifier, ob.confidence)
-        }
-        
-//        DispatchQueue.main.async {
-//            let res = "Classification: \"\(best.identifier)\" Confidence: \(best.confidence)"
-//            print(res)
-//            self.label.text = res
+//        print("-----")
+//        print(request)
+//        for ob in observations {
+//            print(ob.identifier, ob.confidence)
 //        }
+        
+        DispatchQueue.main.async {
+            for ob in observations {
+                switch ob.identifier {
+                case "reni": self.updateLabel(idx: 0, ob: ob)
+                case "kanako": self.updateLabel(idx: 1, ob: ob)
+                case "shiori": self.updateLabel(idx: 2, ob: ob)
+                case "arin": self.updateLabel(idx: 3, ob: ob)
+                case "momoka": self.updateLabel(idx: 4, ob: ob)
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    private func updateLabel(idx: Int, ob: VNClassificationObservation) {
+        let label = probabilityLabels.filter{ $0.tag == idx }.first
+        let progress = progressViews.filter{ $0.tag == idx }.first
+        
+        let per = Int(ob.confidence * 100)
+        label?.text = "\(per)%"
+        progress?.progress = ob.confidence
     }
     
     func setupVideoCapture() {
@@ -166,15 +199,18 @@ extension ViewController {
             print(e)
             return
         }
-        guard let req = request as? VNDetectFaceRectanglesRequest, let faces = req.results as? [VNFaceObservation] else {
+        guard
+            let req = request as? VNDetectFaceRectanglesRequest,
+            let faces = req.results as? [VNFaceObservation],
+            let firstFace = faces.first else {
             return
         }
         guard let image = inputImage else {
             return
         }
         
-        drawFaceRectOverlay(image: image, faces: faces)
-        processForPredict(image: image, faces: faces)
+        drawFaceRectOverlay(image: image, faces: [firstFace])
+        processForPredict(image: image, faces: [firstFace])
     }
     
     //device = 1920,1080 (imagesize/videoDim)
@@ -222,10 +258,6 @@ extension ViewController {
             y: size / box.size.height)
         let faceImage = image.cropping(to: box).applying(transform)
         
-        //FIXME
-        predicate_using_vision_api(image: faceImage)
-        //predicate(image: faceImage)
-        
         let ctx = CIContext()
         guard let cgImage = ctx.createCGImage(faceImage, from: faceImage.extent) else {
             assertionFailure()
@@ -235,25 +267,31 @@ extension ViewController {
         DispatchQueue.main.async {
             self.facePreview.image = uiImage
         }
+        
+        let predInput = CIImage(cgImage: cgImage)
+        predicate_using_vision_api(image: predInput)
     }
     
     fileprivate func predicate_using_vision_api(image: CIImage) {
+        print(image)
+        
         let handler = VNImageRequestHandler(ciImage: image)
         do {
-            try handler.perform([classificationRequest])
+            let req = classificationRequest()
+            try handler.perform([req])
         } catch {
             print(error)
         }
     }
     
     fileprivate func predicate(image: CIImage) {
-        let context = CIContext()
-        let cgImage = context.createCGImage(image, from: image.extent)
-        if let label = classifiy(cgImage: cgImage) {
-            DispatchQueue.main.async {
-                self.label.text = label
-            }
-        }
+//        let context = CIContext()
+//        let cgImage = context.createCGImage(image, from: image.extent)
+//        if let label = classifiy(cgImage: cgImage) {
+//            DispatchQueue.main.async {
+//                self.label.text = label
+//            }
+//        }
     }
     
     fileprivate func classifiy(cgImage: CGImage?) -> String? {
