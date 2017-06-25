@@ -24,12 +24,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CH9-0f-fcV" customClass="OverlayView" customModule="momomind_ios11" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NZh-jD-Lta">
-                                        <rect key="frame" x="374" y="18" width="22" height="22"/>
-                                        <connections>
-                                            <action selector="infoButtonDidTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="p2U-HB-Dz0"/>
-                                        </connections>
-                                    </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CAc-K4-hpx">
                                         <rect key="frame" x="0.0" y="585.66666666666652" width="414" height="150.33333333333337"/>
                                         <subviews>
@@ -197,10 +191,8 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="NZh-jD-Lta" firstAttribute="top" secondItem="CH9-0f-fcV" secondAttribute="top" constant="18" id="W2a-vd-1Ao"/>
                                     <constraint firstItem="CAc-K4-hpx" firstAttribute="leading" secondItem="CH9-0f-fcV" secondAttribute="leading" id="c0N-TM-hhd"/>
                                     <constraint firstAttribute="bottom" secondItem="CAc-K4-hpx" secondAttribute="bottom" id="kvB-cz-F5u"/>
-                                    <constraint firstAttribute="trailing" secondItem="NZh-jD-Lta" secondAttribute="trailing" constant="18" id="srR-6Z-Mp1"/>
                                     <constraint firstAttribute="trailing" secondItem="CAc-K4-hpx" secondAttribute="trailing" id="zBS-Bi-u16"/>
                                 </constraints>
                             </view>
