@@ -4,7 +4,7 @@ coremltools==0.3.0
 funcsigs==1.0.2
 h5py==2.7.0
 html5lib==0.9999999
-Keras==2.0.0
+Keras==2.0.5
 Markdown==2.2.0
 mock==2.0.0
 numpy==1.13.0
