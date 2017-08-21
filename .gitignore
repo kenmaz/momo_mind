@@ -42,3 +42,5 @@ profile
 DerivedData
 .idea/
 test-reports
+*.bk
+*.swp

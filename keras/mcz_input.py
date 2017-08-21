@@ -2,7 +2,7 @@
 
 import csv
 import numpy as np
-import cv2
+from PIL import Image, ImageTk
 
 def main():
     (X_train, Y_train) = read_data('../deeplearning/train.txt')
@@ -17,7 +17,8 @@ def read_data(path):
     dataReader = csv.reader(f, delimiter=' ')
     for row in dataReader:
         path = row[0]
-        img = cv2.imread(path)
+        img = Image.open(path, 'r')
+        img = np.asarray(img)
         imgs.append(img)
         label = row[1]
         labels.append(label)
