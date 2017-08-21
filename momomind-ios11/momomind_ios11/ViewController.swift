@@ -31,7 +31,13 @@ class ViewController: UIViewController {
             }
         }
     }
+
+    @IBAction func infoButtonDidTap(_ sender: Any) {
+        let con = UIStoryboard(name: "TestViewController", bundle: nil).instantiateInitialViewController() as! TestViewController
+        present(con, animated: true, completion: nil)
+    }
     
+
     let session = AVCaptureSession()
     var device: AVCaptureDevice?
     var previewLayer: AVCaptureVideoPreviewLayer?
@@ -50,12 +56,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        guard TARGET_OS_SIMULATOR != 1 else {
-            print("simulator!!!")
-            return
-        }
-        
         setupVideoCapture()
     }
     
@@ -66,16 +66,12 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if !session.isRunning {
-            session.startRunning()
-        }
+        startSession()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if session.isRunning {
-           session.stopRunning()
-        }
+        stopSession()
     }
     
     override func viewDidLayoutSubviews() {
@@ -87,8 +83,28 @@ class ViewController: UIViewController {
 //MARK: - setup video
 
 extension ViewController {
+
+    private var isActualDevice: Bool {
+        return TARGET_OS_SIMULATOR != 1
+    }
     
+    private func startSession() {
+        guard isActualDevice else { return }
+        if !session.isRunning {
+            session.startRunning()
+        }
+    }
+    
+    private func stopSession() {
+        guard isActualDevice else { return }
+        if session.isRunning {
+            session.stopRunning()
+        }
+    }
+
     func setupVideoCapture() {
+        guard isActualDevice else { return }
+
         let device = AVCaptureDevice.default(for: AVMediaType.video)!
         self.device = device
         session.sessionPreset = AVCaptureSession.Preset.inputPriority

@@ -11,7 +11,10 @@ import Vision
 
 class TestViewController: UIViewController {
     
-    let momomind = Momomind()
+    lazy var momomind: Momomind = {
+        let m = Momomind()
+        return m
+    }()
     
     var currentName: String = ""
     var success = 0
@@ -22,6 +25,10 @@ class TestViewController: UIViewController {
     
     @IBAction func testButtonDidTap(_ sender: Any) {
         execute(type: "test")
+    }
+    
+    @IBAction func closeButtonDidTap(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
     
     func execute(type: String) {
