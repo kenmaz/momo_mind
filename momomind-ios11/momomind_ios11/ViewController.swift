@@ -245,8 +245,9 @@ extension ViewController {
         
         let transform = CGAffineTransform(
             scaleX: size / box.size.width,
-            y: size / box.size.height)
-        let faceImage = image.cropping(to: box).applying(transform)
+            y: size / box.size.height
+        )
+        let faceImage = image.cropped(to: box).transformed(by: transform)
         
         let ctx = CIContext()
         guard let cgImage = ctx.createCGImage(faceImage, from: faceImage.extent) else {
