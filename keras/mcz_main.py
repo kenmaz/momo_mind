@@ -4,6 +4,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
+from keras.layers.normalization import BatchNormalization
 import mcz_input
 import sys
 
@@ -31,12 +32,14 @@ model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same', input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
 model.add(Conv2D(32, (3, 3)))
+model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (3, 3), padding='same'))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -45,12 +48,12 @@ model.add(Dropout(0.25))
 model.add(Flatten())
 model.add(Dense(512))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
 model.compile(loss='categorical_crossentropy',
-              #optimizer='rmsprop',
               optimizer='adam',
               metrics=['accuracy'])
 
@@ -59,11 +62,13 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
-from keras.callbacks import CSVLogger, ModelCheckpoint
+from keras.callbacks import CSVLogger, ModelCheckpoint, EarlyStopping
 csv_logger = CSVLogger('log.csv', append=True, separator=';')
 
 fpath = 'weights.{epoch:02d}-{loss:.2f}-{acc:.2f}-{val_loss:.2f}-{val_acc:.2f}.h5'
 cp_cb = ModelCheckpoint(fpath, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
+
+stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=1)
 
 if not data_augmentation:
     print('Not using data augmentation.')
@@ -72,7 +77,7 @@ if not data_augmentation:
               nb_epoch=nb_epoch,
               validation_data=(X_test, Y_test),
               shuffle=True,
-              callbacks=[csv_logger, cp_cb])
+              callbacks=[csv_logger, cp_cb, stopping])
 else:
     print('Using real-time data augmentation.')
     # This will do preprocessing and realtime data augmentation:
