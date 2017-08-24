@@ -50,7 +50,8 @@ model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
 model.compile(loss='categorical_crossentropy',
-              optimizer='rmsprop',
+              #optimizer='rmsprop',
+              optimizer='adam',
               metrics=['accuracy'])
 
 X_train = X_train.astype('float32')
@@ -58,13 +59,20 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
+from keras.callbacks import CSVLogger, ModelCheckpoint
+csv_logger = CSVLogger('log.csv', append=True, separator=';')
+
+fpath = 'weights.{epoch:02d}-{loss:.2f}-{acc:.2f}-{val_loss:.2f}-{val_acc:.2f}.h5'
+cp_cb = ModelCheckpoint(fpath, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
+
 if not data_augmentation:
     print('Not using data augmentation.')
     model.fit(X_train, Y_train,
               batch_size=batch_size,
               nb_epoch=nb_epoch,
               validation_data=(X_test, Y_test),
-              shuffle=True)
+              shuffle=True,
+              callbacks=[csv_logger, cp_cb])
 else:
     print('Using real-time data augmentation.')
     # This will do preprocessing and realtime data augmentation:
@@ -88,6 +96,7 @@ else:
     model.fit_generator(datagen.flow(X_train, Y_train, batch_size=batch_size),
                         steps_per_epoch=len(X_train),
                         epochs=nb_epoch,
-                        validation_data=(X_test, Y_test))
+                        validation_data=(X_test, Y_test),
+                        callbacks=[csv_logger])
 
 model.save('model.h5')
