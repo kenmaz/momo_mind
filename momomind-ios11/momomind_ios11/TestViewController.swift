@@ -30,7 +30,7 @@ class TestViewController: UIViewController {
     @IBAction func closeButtonDidTap(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
-    
+  
     func execute(type: String) {
         let names = [
             "reni",
@@ -81,5 +81,68 @@ class TestViewController: UIViewController {
             success += 1
         }
     }
+}
+
+
+//MARK: debug
+
+extension TestViewController {
     
+    func dumpRawData(imageRef: CGImage) -> [UInt8] {
+        guard let data = imageRef.dataProvider?.data else {
+            assertionFailure()
+            return []
+        }
+        let length = CFDataGetLength(data)
+        var rawData = [UInt8](repeating: 0, count: length)
+        let range = CFRange(location: 0, length: length)
+        CFDataGetBytes(data, range, &rawData)
+        print(rawData)
+    }
+
+    //FIXME: dosen't work
+    func _dumpRawData(from image: CGImage) {
+        
+        let options = [
+            kCVPixelBufferCGImageCompatibilityKey as String: true,
+            kCVPixelBufferCGBitmapContextCompatibilityKey as String: true
+        ]
+        var pxBuffer: CVPixelBuffer? = nil
+        let width = image.width
+        let height = image.height
+        let res = CVPixelBufferCreate(kCFAllocatorDefault,
+                                      width,
+                                      height,
+                                      kCVPixelFormatType_32ARGB,
+                                      options as CFDictionary?,
+                                      &pxBuffer)
+        guard res == kCVReturnSuccess else {
+            assertionFailure()
+            return
+        }
+        guard let buf = pxBuffer else {
+            assertionFailure()
+            return
+        }
+        let ctx = CIContext()
+        let input = CIImage(cgImage: image)
+        ctx.render(input, to: buf)
+        
+        guard CVPixelBufferLockBaseAddress(buf, CVPixelBufferLockFlags.readOnly) == kCVReturnSuccess else {
+            assertionFailure()
+            return
+        }
+        let size = CVPixelBufferGetDataSize(buf)
+        print(size)
+        guard let pointer = CVPixelBufferGetBaseAddress(buf) else {
+            assertionFailure()
+            return
+        }
+        let p = pointer.bindMemory(to: Int8.self, capacity: 128)
+        for i in 0..<128 {
+            print(p.advanced(by: i).pointee)
+        }
+        
+        CVPixelBufferUnlockBaseAddress(buf, CVPixelBufferLockFlags.readOnly)
+    }
 }
