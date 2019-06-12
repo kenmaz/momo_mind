@@ -44,11 +44,7 @@ class ViewController: UIViewController {
     var connection : AVCaptureConnection?
     let inputSize: Float = 112
     
-    let momomind = Momomind()
-    
-    lazy var faceRequest: VNDetectFaceRectanglesRequest = {
-        return VNDetectFaceRectanglesRequest(completionHandler: self.vnRequestHandler)
-    }()
+    let momomind = Model()
     
     var inputImage:CIImage?
     var overlayViewSize: CGSize?
@@ -173,179 +169,144 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             connection.videoOrientation = .portrait
             return
         }
-        if let buffer = CMSampleBufferGetImageBuffer(sampleBuffer), connection == self.connection {
-            let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-            processBuffer(timestamp, buffer)
+        guard connection == self.connection else {
+            return
         }
+
+        guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+
+        let image = CIImage(cvImageBuffer: buffer)
+
+        let cropped = resize(image: image)
+
+        guard let croppedBuffer = pixelBufferFromImage(ciimage: cropped) else {
+            return
+        }
+
+        processBuffer(buffer: croppedBuffer)
     }
-    
-    private func processBuffer(_ timestamp: CMTime, _ buffer: CVImageBuffer) {
-        let inputImage = CIImage(cvImageBuffer: buffer)
-        let handler = VNImageRequestHandler(ciImage: inputImage)
-        self.inputImage = inputImage
-        DispatchQueue.global(qos: .userInteractive).async {
-            do {
-                try handler.perform([self.faceRequest])
-            } catch {
-                print(error)
+
+    func resize(image: CIImage) -> CIImage{
+        let expectedSize = CGSize(width: 416.0, height: 416.0)
+
+        let width = image.extent.width
+        let height = image.extent.height
+
+        let widthScale = expectedSize.width / width
+        let heightScale = expectedSize.height / height
+        let scale = max(widthScale, heightScale)
+        let scaled = image.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+
+        print(scaled.extent.width)
+        print(scaled.extent.height)
+
+        let size = CGRect(
+            x: (scaled.extent.width / 2) - (expectedSize.width / 2),
+            y: (scaled.extent.height / 2) - (expectedSize.height / 2),
+            width: expectedSize.width,
+            height: expectedSize.height
+        )
+        let cropped = scaled.cropped(to: size)
+        return cropped
+    }
+
+    func pixelBufferFromImage(ciimage: CIImage) -> CVPixelBuffer? {
+        let tmpcontext = CIContext(options: nil)
+        guard let cgimage = tmpcontext.createCGImage(ciimage, from: ciimage.extent) else {
+            return nil
+        }
+
+        let cfnumPointer = UnsafeMutablePointer<UnsafeRawPointer>.allocate(capacity: 1)
+        let cfnum = CFNumberCreate(kCFAllocatorDefault, .intType, cfnumPointer)
+        let keys: [CFString] = [kCVPixelBufferCGImageCompatibilityKey, kCVPixelBufferCGBitmapContextCompatibilityKey, kCVPixelBufferBytesPerRowAlignmentKey]
+        let values: [CFTypeRef] = [kCFBooleanTrue, kCFBooleanTrue, cfnum!]
+        let keysPointer = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 1)
+        let valuesPointer =  UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 1)
+        keysPointer.initialize(to: keys)
+        valuesPointer.initialize(to: values)
+
+        let options = CFDictionaryCreate(kCFAllocatorDefault, keysPointer, valuesPointer, keys.count, nil, nil)
+
+        let width = cgimage.width
+        let height = cgimage.height
+
+        var pxbuffer: CVPixelBuffer?
+
+        guard CVPixelBufferCreate(
+            kCFAllocatorDefault, width, height,
+            kCVPixelFormatType_32BGRA,
+            options,
+            &pxbuffer) == kCVReturnSuccess else {
+                return nil
+        }
+        
+        guard CVPixelBufferLockBaseAddress(pxbuffer!, CVPixelBufferLockFlags(rawValue: 0)) == kCVReturnSuccess else {
+            return nil
+        }
+
+        let bufferAddress = CVPixelBufferGetBaseAddress(pxbuffer!)
+
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+        let bytesperrow = CVPixelBufferGetBytesPerRow(pxbuffer!)
+        guard let context = CGContext(
+            data: bufferAddress,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: bytesperrow,
+            space: rgbColorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue) else {
+                return nil
+        }
+
+        context.concatenate(CGAffineTransform(rotationAngle: 0))
+        context.concatenate(__CGAffineTransformMake( 1, 0, 0, -1, 0, CGFloat(height) )) //Flip Vertical
+
+        context.draw(cgimage, in: CGRect(x:0, y:0, width:CGFloat(width), height:CGFloat(height)))
+        guard CVPixelBufferUnlockBaseAddress(pxbuffer!, CVPixelBufferLockFlags(rawValue: 0)) == kCVReturnSuccess else {
+            return nil
+        }
+        return pxbuffer!
+
+    }
+
+    func getImageFromSampleBuffer (buffer:CMSampleBuffer) -> UIImage? {
+        if let pixelBuffer = CMSampleBufferGetImageBuffer(buffer) {
+            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            let resizedCIImage = ciImage.transformed(by: CGAffineTransform(scaleX: 128.0 / 750.0, y: 128.0 / 750.0))
+
+            let context = CIContext()
+            if let image = context.createCGImage(resizedCIImage, from: resizedCIImage.extent) {
+                return UIImage(cgImage: image)
             }
         }
+        return nil
     }
-}
 
-//MARK: - Face detection
+    func createBuffer(from image: CIImage) -> CVPixelBuffer? {
+        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue, kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+        var pixelBuffer : CVPixelBuffer?
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(image.extent.width), Int(image.extent.height), kCVPixelFormatType_32BGRA, attrs, &pixelBuffer)
 
-extension ViewController {
-    
-    func vnRequestHandler(request: VNRequest, error: Error?) {
-        if let e = error {
-            print(e)
-            return
-        }
-        guard
-            let req = request as? VNDetectFaceRectanglesRequest,
-            let faces = req.results as? [VNFaceObservation],
-            let centerFace = faces.sorted(by: { (a, b) -> Bool in distanceToCenter(face: a) < distanceToCenter(face: b) }).first else {
-            return
-        }
-        guard let image = inputImage else {
-            return
-        }
-        
-        drawFaceRectOverlay(image: image, face: centerFace)
-        
-        guard let cgImage = getFaceCGImage(image: image, face: centerFace) else {
-            return
-        }
-        showPreview(cgImage: cgImage)
-        predicate(cgImage: cgImage)
-    }
-    
-    private func distanceToCenter(face: VNFaceObservation) -> CGFloat {
-        let x = face.boundingBox.origin.x + face.boundingBox.size.width / 2
-        let y = face.boundingBox.origin.y + face.boundingBox.size.height / 2
-        let pos = CGPoint(x: x, y: y)
-        let viewPos = CGPoint(x: 0.5, y: 0.5)
-        let distance = sqrt(pow(pos.x - viewPos.x, 2) + pow(pos.y - viewPos.y, 2))
-        return distance
-    }
-    
-    //device = 1920,1080 (imagesize/videoDim)
-    //image  = 736, 414
-    //screen = 414, 736
-    //
-    private func drawFaceRectOverlay(image: CIImage, face: VNFaceObservation) {
-        guard let viewSize = overlayViewSize else {
-            return
-        }
-        
-        var boxes:[CGRect] = []
-        print("boundingBox:",face.boundingBox, viewSize)
-        let box = face.boundingBox.scaledForOverlay(to: viewSize)
-        boxes.append(box)
-        
-        DispatchQueue.main.async {
-            self.overlayView.boxes = boxes
-            self.overlayView.setNeedsDisplay()
-        }
-    }
-    
-    private func getFaceCGImage(image: CIImage, face: VNFaceObservation) -> CGImage? {
-        let imageSize = image.extent.size
-        
-        let box = face.boundingBox.scaledForCropping(to: imageSize)
-        guard image.extent.contains(box) else {
+        guard (status == kCVReturnSuccess) else {
             return nil
         }
-        let size = CGFloat(inputSize)
-        
-        let transform = CGAffineTransform(
-            scaleX: size / box.size.width,
-            y: size / box.size.height
-        )
-        let faceImage = image.cropped(to: box).transformed(by: transform)
-        
-        let ctx = CIContext()
-        guard let cgImage = ctx.createCGImage(faceImage, from: faceImage.extent) else {
-            assertionFailure()
-            return nil
-        }
-        return cgImage
-    }
-    
-    private func showPreview(cgImage:CGImage) {
-        let uiImage = UIImage(cgImage: cgImage)
-        DispatchQueue.main.async {
-            self.facePreview.image = uiImage
-        }
-    }
-}
 
-//MARK: - Predicate
+        return pixelBuffer
+    }
 
-extension ViewController {
-    
-    fileprivate func predicate(cgImage: CGImage) {
-        let image = CIImage(cgImage: cgImage)
-        
-        print(image)
-        
-        let handler = VNImageRequestHandler(ciImage: image)
+    private func processBuffer(buffer: CVPixelBuffer) {
+
+        let input = ModelInput(image: buffer, iouThreshold: 0.01, confidenceThreshold: 0.01)
         do {
-            let model = try VNCoreMLModel(for: self.momomind.model)
-            let req = VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
-            try handler.perform([req])
+            let output = try momomind.prediction(input: input)
+            print(output.confidence)
+            print(output.coordinates)
+
         } catch {
             print(error)
         }
     }
-    
-    private func handleClassification(request: VNRequest, error: Error?) {
-        guard let observations = request.results as? [VNClassificationObservation]
-            else { fatalError("unexpected result type from VNCoreMLRequest") }
-        
-        DispatchQueue.main.async {
-            for ob in observations {
-                switch ob.identifier {
-                case "reni": self.updateLabel(idx: 0, ob: ob)
-                case "kanako": self.updateLabel(idx: 1, ob: ob)
-                case "shiori": self.updateLabel(idx: 2, ob: ob)
-                case "arin": self.updateLabel(idx: 3, ob: ob)
-                case "momoka": self.updateLabel(idx: 4, ob: ob)
-                default:
-                    break
-                }
-            }
-        }
-    }
-    
-    private func updateLabel(idx: Int, ob: VNClassificationObservation) {
-        let label = probabilityLabels.filter{ $0.tag == idx }.first
-        let progress = progressViews.filter{ $0.tag == idx }.first
-        
-        let per = Int(ob.confidence * 100)
-        label?.text = "\(per)%"
-        progress?.progress = ob.confidence
-    }
 }
-
-extension CGRect {
-    func scaledForOverlay(to size: CGSize) -> CGRect {
-        return CGRect(
-            x: self.origin.x * size.width,
-            y: (1.0 - self.origin.y - self.size.height) * size.height,
-            width: (self.size.width * size.width),
-            height: (self.size.height * size.height)
-        )
-    }
-    
-    func scaledForCropping(to size: CGSize) -> CGRect {
-        return CGRect(
-            x: self.origin.x * size.width,
-            y: self.origin.y * size.height,
-            width: (self.size.width * size.width),
-            height: (self.size.height * size.height)
-        )
-    }
-}
-

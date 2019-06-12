@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5E06C7E61EFDFCEA007F48BE /* out in Resources */ = {isa = PBXBuildFile; fileRef = 5E06C7E51EFDFCEA007F48BE /* out */; };
 		5EC4CE6B1EFFF95E00D6ADE4 /* TestViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EC4CE6A1EFFF95E00D6ADE4 /* TestViewController.storyboard */; };
 		5EC4CE6D1EFFFAA800D6ADE4 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC4CE6C1EFFFAA800D6ADE4 /* TestViewController.swift */; };
 		5EEB7E621EF427F2005C8D81 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */; };
@@ -16,11 +15,10 @@
 		5EEB7E691EF427F2005C8D81 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E681EF427F2005C8D81 /* Assets.xcassets */; };
 		5EEB7E6C1EF427F2005C8D81 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EEB7E6A1EF427F2005C8D81 /* LaunchScreen.storyboard */; };
 		5EEB7E741EF43AD8005C8D81 /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */; };
-		5EFAFCD51EF96DA20030DC5A /* Momomind.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAFCD41EF96DA20030DC5A /* Momomind.mlmodel */; };
+		8AFA731022B0DB9D008E8163 /* Model.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8AFA730F22B0DB9D008E8163 /* Model.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5E06C7E51EFDFCEA007F48BE /* out */ = {isa = PBXFileReference; lastKnownFileType = folder; path = out; sourceTree = "<group>"; };
 		5EC4CE6A1EFFF95E00D6ADE4 /* TestViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TestViewController.storyboard; sourceTree = "<group>"; };
 		5EC4CE6C1EFFFAA800D6ADE4 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		5EEB7E5E1EF427F2005C8D81 /* momomind_ios11.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = momomind_ios11.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -31,7 +29,7 @@
 		5EEB7E6B1EF427F2005C8D81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5EEB7E6D1EF427F2005C8D81 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5EEB7E731EF43AD8005C8D81 /* OverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayView.swift; sourceTree = "<group>"; };
-		5EFAFCD41EF96DA20030DC5A /* Momomind.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = Momomind.mlmodel; path = ../../coreml/Momomind.mlmodel; sourceTree = "<group>"; };
+		8AFA730F22B0DB9D008E8163 /* Model.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Model.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +62,6 @@
 		5EEB7E601EF427F2005C8D81 /* momomind_ios11 */ = {
 			isa = PBXGroup;
 			children = (
-				5E06C7E51EFDFCEA007F48BE /* out */,
 				5EEB7E611EF427F2005C8D81 /* AppDelegate.swift */,
 				5EEB7E631EF427F2005C8D81 /* ViewController.swift */,
 				5EC4CE6A1EFFF95E00D6ADE4 /* TestViewController.storyboard */,
@@ -74,7 +71,7 @@
 				5EEB7E681EF427F2005C8D81 /* Assets.xcassets */,
 				5EEB7E6A1EF427F2005C8D81 /* LaunchScreen.storyboard */,
 				5EEB7E6D1EF427F2005C8D81 /* Info.plist */,
-				5EFAFCD41EF96DA20030DC5A /* Momomind.mlmodel */,
+				8AFA730F22B0DB9D008E8163 /* Model.mlmodel */,
 			);
 			path = momomind_ios11;
 			sourceTree = "<group>";
@@ -141,7 +138,6 @@
 				5EEB7E691EF427F2005C8D81 /* Assets.xcassets in Resources */,
 				5EEB7E671EF427F2005C8D81 /* Main.storyboard in Resources */,
 				5EC4CE6B1EFFF95E00D6ADE4 /* TestViewController.storyboard in Resources */,
-				5E06C7E61EFDFCEA007F48BE /* out in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EC4CE6D1EFFFAA800D6ADE4 /* TestViewController.swift in Sources */,
-				5EFAFCD51EF96DA20030DC5A /* Momomind.mlmodel in Sources */,
+				8AFA731022B0DB9D008E8163 /* Model.mlmodel in Sources */,
 				5EEB7E741EF43AD8005C8D81 /* OverlayView.swift in Sources */,
 				5EEB7E641EF427F2005C8D81 /* ViewController.swift in Sources */,
 				5EEB7E621EF427F2005C8D81 /* AppDelegate.swift in Sources */,
@@ -228,7 +224,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -277,7 +273,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -289,7 +285,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = D9UCJ653YY;
+				DEVELOPMENT_TEAM = 6J3GVW7UN7;
 				INFOPLIST_FILE = momomind_ios11/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.kenmaz.momomind-ios11";
@@ -303,7 +299,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = D9UCJ653YY;
+				DEVELOPMENT_TEAM = 6J3GVW7UN7;
 				INFOPLIST_FILE = momomind_ios11/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.kenmaz.momomind-ios11";

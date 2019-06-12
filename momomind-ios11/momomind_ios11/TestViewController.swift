@@ -11,8 +11,8 @@ import Vision
 
 class TestViewController: UIViewController {
     
-    lazy var momomind: Momomind = {
-        let m = Momomind()
+    lazy var momomind: Model = {
+        let m = Model()
         return m
     }()
     
@@ -88,10 +88,9 @@ class TestViewController: UIViewController {
 
 extension TestViewController {
     
-    func dumpRawData(imageRef: CGImage) -> [UInt8] {
+    func dumpRawData(imageRef: CGImage) {
         guard let data = imageRef.dataProvider?.data else {
-            assertionFailure()
-            return []
+            fatalError()
         }
         let length = CFDataGetLength(data)
         var rawData = [UInt8](repeating: 0, count: length)
