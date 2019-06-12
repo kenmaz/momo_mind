@@ -28,6 +28,8 @@ class ViewController: UIViewController {
 
     let expectedSize = CGSize(width: 416.0, height: 416.0)
 
+    @IBOutlet var confidence: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupVideoCapture()
@@ -277,8 +279,10 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             let output = try momomind.prediction(input: input)
             let results = processPredictOutput(output: output)
             let boxes = getBoxies(results: results, originalRect: originalRect)
+            let confidence = Int((results.first?.confidence ?? 0) * 100)
             DispatchQueue.main.async { [weak self] in
                 self?.overlayView.boxes = boxes
+                self?.confidence.text = "\(confidence)%"
                 self?.overlayView.setNeedsDisplay()
             }
         } catch {
