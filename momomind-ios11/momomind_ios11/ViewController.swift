@@ -13,30 +13,6 @@ import Vision
 class ViewController: UIViewController {
     
     @IBOutlet weak var overlayView: OverlayView!
-    @IBOutlet weak var facePreview: UIImageView!
-    
-    @IBOutlet var progressViews: [UIProgressView]! {
-        didSet {
-            progressViews.forEach {
-                $0.transform = CGAffineTransform(scaleX: 1, y: 3)
-                $0.progress = 0
-            }
-        }
-    }
-    
-    @IBOutlet var probabilityLabels: [UILabel]! {
-        didSet {
-            probabilityLabels.forEach {
-                $0.text = "-%"
-            }
-        }
-    }
-
-    @IBAction func infoButtonDidTap(_ sender: Any) {
-        let con = UIStoryboard(name: "TestViewController", bundle: nil).instantiateInitialViewController() as! TestViewController
-        present(con, animated: true, completion: nil)
-    }
-    
 
     let session = AVCaptureSession()
     var device: AVCaptureDevice?
@@ -49,7 +25,9 @@ class ViewController: UIViewController {
     var inputImage:CIImage?
     var overlayViewSize: CGSize?
     var videoDims: CMVideoDimensions?
-    
+
+    let expectedSize = CGSize(width: 416.0, height: 416.0)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupVideoCapture()
@@ -107,9 +85,6 @@ extension ViewController {
         device.formats.forEach { (format) in
             print(format)
         }
-        print("format:",device.activeFormat)
-        print("min duration:", device.activeVideoMinFrameDuration)
-        print("max duration:", device.activeVideoMaxFrameDuration)
         
         do {
             try device.lockForConfiguration()
@@ -185,12 +160,10 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
 
-        processBuffer(buffer: croppedBuffer)
+        processBuffer(buffer: croppedBuffer, originalRect: image.extent)
     }
 
     func resize(image: CIImage) -> CIImage{
-        let expectedSize = CGSize(width: 416.0, height: 416.0)
-
         let width = image.extent.width
         let height = image.extent.height
 
@@ -199,8 +172,8 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let scale = max(widthScale, heightScale)
         let scaled = image.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
 
-        print(scaled.extent.width)
-        print(scaled.extent.height)
+//        print(scaled.extent.width)
+//        print(scaled.extent.height)
 
         let size = CGRect(
             x: (scaled.extent.width / 2) - (expectedSize.width / 2),
@@ -297,16 +270,86 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         return pixelBuffer
     }
 
-    private func processBuffer(buffer: CVPixelBuffer) {
+    private func processBuffer(buffer: CVPixelBuffer, originalRect: CGRect) {
 
         let input = ModelInput(image: buffer, iouThreshold: 0.01, confidenceThreshold: 0.01)
         do {
             let output = try momomind.prediction(input: input)
-            print(output.confidence)
-            print(output.coordinates)
-
+            let results = processPredictOutput(output: output)
+            let boxes = getBoxies(results: results, originalRect: originalRect)
+            DispatchQueue.main.async { [weak self] in
+                self?.overlayView.boxes = boxes
+                self?.overlayView.setNeedsDisplay()
+            }
         } catch {
             print(error)
+        }
+    }
+
+    private struct Result {
+        let confidence: Float
+        let x: CGFloat
+        let y: CGFloat
+        let width: CGFloat
+        let height: CGFloat
+    }
+
+    private func processPredictOutput(output: ModelOutput) -> [Result] {
+        var results: [Result] = []
+        for i in 0..<output.confidence.count {
+            results.append(.init(
+                confidence: output.confidence[i].floatValue,
+                x: CGFloat(output.coordinates[[NSNumber(value: i), 0]].floatValue),
+                y: CGFloat(output.coordinates[[NSNumber(value: i), 1]].floatValue),
+                width: CGFloat(output.coordinates[[NSNumber(value: i), 2]].floatValue),
+                height: CGFloat(output.coordinates[[NSNumber(value: i), 3]].floatValue)
+            ))
+        }
+        return results
+    }
+
+    private func getBoxies(results: [Result], originalRect: CGRect) -> [CGRect] {
+        return results.map {
+            // frame at (614,614)
+            let x = $0.x * expectedSize.width
+            let y = (1  - $0.y) * expectedSize.height
+            let w = $0.width * expectedSize.width
+            let h = $0.height * expectedSize.height
+
+            //frame at (1080,1080)
+            let oScale = originalRect.width / expectedSize.width
+            let ox = x * oScale
+            let oy = y * oScale
+            let ow = w * oScale
+            let oh = h * oScale
+
+            //frame at (1080,1920)
+            let px = ox
+            let py = oy + ((originalRect.height - originalRect.width) / 2)
+            let pw = ow
+            let ph = oh
+
+            //screen (834,1112)
+            let sw = UIScreen.main.bounds.width //
+            let sh = UIScreen.main.bounds.height
+
+            //frame at 834, 1920*(834/1080)
+            let gratio = (sw / originalRect.width)
+            let gx = px * gratio
+            let gy = py * gratio
+            let gw = pw * gratio
+            let gh = ph * gratio
+
+            let ryDiff = ((originalRect.height * gratio) - sh) / 2
+            let rx = gx
+            let ry = gy - ryDiff
+            let rw = gw
+            let rh = gh
+
+            var rect = CGRect.zero
+            rect.size = CGSize(width: rw, height: rh)
+            rect.origin = CGPoint(x: rx - rw / 2, y: ry - rh / 2)
+            return rect
         }
     }
 }
